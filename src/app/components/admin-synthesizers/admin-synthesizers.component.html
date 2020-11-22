@@ -1,0 +1,30 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="this.adminNavigationService.provider"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>Synthesizers</h2>
+    <clr-datagrid>
+      <clr-dg-column>Title</clr-dg-column>
+      <clr-dg-column>Description</clr-dg-column>
+      <clr-dg-column>Dependency</clr-dg-column>
+      <clr-dg-column>Priority</clr-dg-column>
+
+      <clr-dg-placeholder>We couldn't find any synthesizers!</clr-dg-placeholder>
+
+      <clr-dg-row *ngFor="let synthesizer of synthesizers">
+        <clr-dg-cell>{{synthesizer.title}}</clr-dg-cell>
+        <clr-dg-cell>{{synthesizer.description}}</clr-dg-cell>
+        <clr-dg-cell>{{synthesizer.dependency}}</clr-dg-cell>
+        <clr-dg-cell>{{synthesizer.priority}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>{{synthesizers.length}} synthesizers</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>

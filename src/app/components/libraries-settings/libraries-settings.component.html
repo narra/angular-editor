@@ -1,0 +1,53 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>{{library.name}}</h2>
+    <h3>Settings</h3>
+    <form clrForm>
+      <clr-select-container>
+        <label>Scenario</label>
+        <select clrSelect name="scenario" [(ngModel)]="library.scenario" #scenario="ngModel"
+                (ngModelChange)="_modelChanged()" required>
+          <option *ngFor="let scenario of scenarios" [value]="scenario">{{scenario.name}}</option>
+        </select>
+        <clr-control-helper *ngIf="library.scenario">{{library.scenario.description}}</clr-control-helper>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-select-container>
+      <clr-toggle-container>
+        <label>Shared</label>
+        <clr-toggle-wrapper>
+          <input type="checkbox" clrToggle name="options" [(ngModel)]="library.shared"
+                 (ngModelChange)="_modelChanged()"/>
+        </clr-toggle-wrapper>
+        <clr-control-helper>Wether the library will be shared for other authors</clr-control-helper>
+      </clr-toggle-container>
+      <div class="clr-form-control clr-row" *ngIf="changed || relation === RelationType.owned">
+        <label class="clr-control-label">Actions</label>
+        <button class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateLibrary()">Update Library
+        </button>
+        <button class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">
+          Delete Library
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<clr-modal *ngIf="library" [(clrModalOpen)]="delete">
+  <h3 class="modal-title">Delete library</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{library.name}}</strong>? This action is permanent and cannot be
+      recovered.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="delete = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="_deleteLibrary()">Delete</button>
+  </div>
+</clr-modal>

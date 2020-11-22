@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+:focus {
+  outline:0 !important;
+}
+
+.hidden {
+  display: none;
+}
+
+.relation-unknown {
+  background-color: #e6e6e6;
+}
+
+.purged {
+  opacity: 50%;
+}
+
+.edit {
+  opacity: 75%;
+}
+
+.text-preview {
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
+
+.narra-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+.header-logo {
+  height: 45%;
+}
+
+.opacity-hover {
+  opacity: 50%;
+}
+
+.opacity-hover:hover {
+  opacity: 100%;
+}

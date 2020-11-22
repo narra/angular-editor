@@ -1,0 +1,162 @@
+<clr-wizard #wizard [(clrWizardOpen)]="open" clrWizardSize="lg">
+  <clr-wizard-title>Import Item</clr-wizard-title>
+
+  <clr-wizard-button *ngIf="!loadingFlag" [type]="'cancel'">Cancel</clr-wizard-button>
+  <clr-wizard-button *ngIf="!loadingFlag" [type]="'previous'">Back</clr-wizard-button>
+  <clr-wizard-button [clrWizardButtonDisabled]="loadingFlag" [type]="'next'">
+    <span *ngIf="!loadingFlag">Next</span>
+    <span *ngIf="loadingFlag">Please wait...</span>
+  </clr-wizard-button>
+  <clr-wizard-button [clrWizardButtonDisabled]="loadingFlag" [type]="'finish'">
+    <span *ngIf="!loadingFlag">Finish</span>
+    <span *ngIf="loadingFlag">Please wait...</span>
+  </clr-wizard-button>
+
+  <clr-wizard-page (clrWizardPageNext)="checkFiles()" (clrWizardPageOnCancel)="doCancel()"
+                   [clrWizardPageNextDisabled]="!isUploaded()"
+                   clrWizardPagePreventDefault="true">
+    <ng-template clrPageTitle>Upload Files</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <div *ngIf="!loadingFlag">
+      <div (fileDropped)="onFileDropped($event)" appDrop class="container">
+        <input #fileDropRef (change)="fileBrowseHandler($event.target.files)" id="fileDropRef" multiple type="file"/>
+        <clr-icon shape="upload" size="36" style="opacity: 50%;"></clr-icon>
+        <div style="margin-top: 10px;">Drag and drop file here</div>
+        <div style="margin-top: 10px; margin-bottom: 10px;">or</div>
+        <label class="btn btn-warning-outline" for="fileDropRef">Browse for file</label>
+      </div>
+      <div *ngFor="let file of files; let i = index" class="clr-row clr-align-items-center"
+           style="border: dashed 1px #979797; margin: 10px auto;">
+        <div class="clr-col-1" style="padding: 0;">
+          <clr-icon [class.is-error]="file.error" [class.is-success]="file.success" shape="file" size="48"
+                    style="opacity: 25%;"></clr-icon>
+        </div>
+        <div class="clr-col">
+          <div><strong>{{ file.name }}</strong></div>
+          <div class="clr-row">
+            <div class="clr-col-auto">{{ formatBytes(file.size) }}</div>
+            <div class="clr-col clr-align-self-end">
+              <div [class.flash-danger]="file.error" [class.flash]="!file.error" class="progress flash progress-fade"
+                   style="height: 5px; margin-bottom: 7px;">
+                <progress data-displayval="0%" max="100" value="{{file.progress}}"></progress>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clr-col-2 text-right" style="padding: 0;">
+          <clr-icon (click)="uploadFile(i, true, false)" *ngIf="file.error" shape="refresh" size="24"
+                    style="opacity: 20%; margin-left: 5px; cursor: pointer;"></clr-icon>
+          <clr-icon (click)="removeFile(i)" *ngIf="file.success || file.error" shape="times" size="36"
+                    style="opacity: 20%; cursor: pointer;"></clr-icon>
+        </div>
+      </div>
+    </div>
+  </clr-wizard-page>
+
+  <clr-wizard-page (clrWizardPageNext)="prepareOptions()" (clrWizardPageOnCancel)="doCancel()"
+                   (clrWizardPagePrevious)="doPrevious()" [clrWizardPageNextDisabled]="!isChecked()"
+                   clrWizardPagePreventDefault="true">
+    <ng-template clrPageTitle>Review Items</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <div class="clr-row clr-align-items-center" style="height: 40vh;" *ngIf="!this.proxies">
+      <div class="clr-col-12 text-center">
+        <clr-icon shape="info-circle" size="72"></clr-icon>
+        <div>We couldn't resolve any items.</div>
+      </div>
+    </div>
+
+    <div class="clr-row" style="padding-left: 10px; padding-bottom: 15px; padding-right: 0px;" *ngIf="proxies.length">
+      <div class="clr-col-4"><strong>{{proxies.length}}</strong> items resolved.</div>
+      <div class="clr-col text-right" style="padding: 0px;">
+        <span class="btn btn-sm" (click)="selectProxies(true)">Select All</span>
+        <span class="btn btn-sm" (click)="selectProxies(false)">Deselect All</span>
+      </div>
+    </div>
+
+    <div *ngFor="let proxy of proxies; let i = index" class="clr-row"
+         style="border-bottom: 1px solid #e3e3e3; padding-top: 5px; padding-bottom: 5px;" [class.selected]="proxy.selected" [class.deselected]="!proxy.selected" (click)="proxy.selected = !proxy.selected">
+      <div class="clr-col-2" style="padding-top: 0; padding-bottom: 0;">
+        <img [src]="proxy.thumbnails[0]" style="width: 100%; height: 100%;">
+      </div>
+      <div class="clr-col">
+        <div class="clr-row">
+          <div class="clr-col"><strong>{{proxy.name}}</strong></div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-10">{{proxy.connector}}</div>
+          <div class="clr-col-2"><span class="label label-info">{{proxy.type}}</span></div>
+        </div>
+      </div>
+    </div>
+  </clr-wizard-page>
+
+  <clr-wizard-page (clrWizardPageOnCancel)="doCancel()" (clrWizardPageOnCommit)="onFinish()"
+                   (clrWizardPagePrevious)="doPrevious()" clrWizardPagePreventDefault="true"
+                   [clrWizardPageNextDisabled]="this.validationFlag">
+    <ng-template clrPageTitle>Library</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <clr-progress-bar *ngIf="addingFlag" [clrValue]="addingProgress" [clrMax]="addingMax"></clr-progress-bar>
+
+    <form clrForm #formLibrary="ngForm" [class.hidden]="loadingFlag">
+      <clr-tabs>
+        <clr-tab>
+          <button clrTabLink id="link1">Select</button>
+          <ng-template [(clrIfActive)]="selectionActive">
+            <clr-tab-content>
+              <p>Select an existing library to add all items into it.</p>
+              <clr-select-container *ngIf="libraries && libraries.length">
+                <label>Library</label>
+                <select clrSelect name="library" [(ngModel)]="selectedLibrary" required>
+                  <option disabled [value]="undefined">Select library</option>
+                  <option *ngFor="let l of libraries" [value]="l.id">{{l.name}}</option>
+                </select>
+                <clr-control-error>This field is required!</clr-control-error>
+              </clr-select-container>
+            </clr-tab-content>
+          </ng-template>
+        </clr-tab>
+        <clr-tab>
+          <button clrTabLink>Create</button>
+          <ng-template [(clrIfActive)]="creationActive">
+            <clr-tab-content>
+              <p>Create a new library to add all items into it. If any of items support library metada it would be
+                prefilled.</p>
+              <clr-input-container>
+                <label>Name</label>
+                <input clrInput [(ngModel)]="newLibrary.name" name="name" required/>
+                <clr-control-error>This field is required!</clr-control-error>
+              </clr-input-container>
+
+              <clr-select-container>
+                <label>Scenario</label>
+                <select clrSelect name="scenario" [(ngModel)]="newLibrary.scenario" #scenario="ngModel" required>
+                  <option *ngFor="let scenario of scenarios" [value]="scenario">{{scenario.name}}</option>
+                </select>
+                <clr-control-helper *ngIf="newLibrary.scenario">{{newLibrary.scenario.description}}</clr-control-helper>
+                <clr-control-error>This field is required!</clr-control-error>
+              </clr-select-container>
+
+              <clr-input-container *ngIf="project">
+                <label>Project</label>
+                <input clrInput name="project" [value]="project.title" disabled/>
+                <clr-control-helper>{{project.description}}</clr-control-helper>
+              </clr-input-container>
+            </clr-tab-content>
+          </ng-template>
+        </clr-tab>
+      </clr-tabs>
+    </form>
+  </clr-wizard-page>
+</clr-wizard>

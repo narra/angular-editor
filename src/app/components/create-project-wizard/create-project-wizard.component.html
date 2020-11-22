@@ -1,0 +1,74 @@
+<clr-wizard #wizard [(clrWizardOpen)]="open" [clrWizardDisableStepnav]="loadingFlag" clrWizardSize="lg">
+  <clr-wizard-title>Create Project</clr-wizard-title>
+
+  <clr-wizard-button [type]="'cancel'" *ngIf="!loadingFlag">Cancel</clr-wizard-button>
+  <clr-wizard-button [type]="'previous'" *ngIf="!loadingFlag">Back</clr-wizard-button>
+  <clr-wizard-button [type]="'next'" [clrWizardButtonDisabled]="loadingFlag">
+    <span *ngIf="!loadingFlag">Next</span>
+    <span *ngIf="loadingFlag">Please wait...</span>
+  </clr-wizard-button>
+  <clr-wizard-button [type]="'finish'" [clrWizardButtonDisabled]="loadingFlag">
+    <span *ngIf="!loadingFlag">Finish</span>
+    <span *ngIf="loadingFlag">Please wait...</span>
+  </clr-wizard-button>
+
+  <clr-wizard-page clrWizardPagePreventDefault="true" (clrWizardPageOnCommit)="onCommit()"
+                   (clrWizardPageOnCancel)="doCancel()"
+                   [clrWizardPageNextDisabled]="name.pristine || !formBasic.valid">
+    <ng-template clrPageTitle>Basic Information</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <clr-alert *ngIf="errorFlag" [clrAlertType]="'alert-danger'" [clrCloseButtonAriaLabel]="'Close Answer alert'">
+      <clr-alert-item>
+        There is another project using this name !
+      </clr-alert-item>
+    </clr-alert>
+
+    <form clrForm #formBasic="ngForm" [class.hidden]="loadingFlag">
+      <clr-input-container>
+        <label>Name</label>
+        <input clrInput [(ngModel)]="project.title" name="title" #name="ngModel" required/>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-input-container>
+
+      <clr-textarea-container>
+        <label>Description</label>
+        <textarea clrTextarea [(ngModel)]="project.description" name="description"
+                  style="width: 100%;height: 20vh;"></textarea>
+      </clr-textarea-container>
+
+      <clr-select-container>
+        <label>Scenario</label>
+        <select clrSelect name="scenario" [(ngModel)]="project.scenario" #scenario="ngModel" required>
+          <option *ngFor="let scenario of scenarios" [value]="scenario">{{scenario.name}}</option>
+        </select>
+        <clr-control-helper *ngIf="project.scenario">{{project.scenario.description}}</clr-control-helper>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-select-container>
+    </form>
+  </clr-wizard-page>
+
+  <clr-wizard-page clrWizardPagePreventDefault="true" (clrWizardPagePrevious)="doPrevious()"
+                   (clrWizardPageOnCancel)="doCancel()" (clrWizardPageOnCommit)="onFinish()">
+    <ng-template clrPageTitle>Contributors</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <form clrForm #formContributors="ngForm" [class.hidden]="loadingFlag">
+      <clr-datagrid [clrDgRowSelection]="true" [(clrDgSelected)]="project.contributors">
+        <clr-dg-placeholder>We couldn't find any other contributors!</clr-dg-placeholder>
+        <clr-dg-column>Name</clr-dg-column>
+        <clr-dg-column>Username</clr-dg-column>
+        <clr-dg-row *ngFor="let user of users" [clrDgItem]="user">
+          <clr-dg-cell>{{user.name}}</clr-dg-cell>
+          <clr-dg-cell>{{user.username}}</clr-dg-cell>
+        </clr-dg-row>
+      </clr-datagrid>
+    </form>
+  </clr-wizard-page>
+</clr-wizard>

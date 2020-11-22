@@ -1,0 +1,90 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <div>
+      <span *ngFor="let thumbnail of project.thumbnails">
+        <img [src]="thumbnail" style="width: 20%">
+      </span>
+    </div>
+    <div class="clr-row clr-justify-content-between">
+      <div class="clr-col-4">
+        <h2>{{project.title}}</h2>
+      </div>
+      <div class="clr-col-4" class="text-right" style="margin-top: 35px;">
+        <clr-toggle-wrapper>
+          <input type="checkbox" clrToggle [(ngModel)]="edit" name="edit"/>
+          <label>Edit Mode</label>
+        </clr-toggle-wrapper>
+      </div>
+    </div>
+    <p class="p1">{{project.description}}</p>
+    <h3>Libraries</h3>
+    <!-- No libraries -->
+    <app-placeholder *ngIf="!loading && !edit && !project.libraries.length">
+      We couldn't find any libraries assigned to this project!
+    </app-placeholder>
+    <div class="clr-row" *ngIf="!edit">
+      <div *ngFor="let library of project.libraries" class="clr-col-lg-2">
+        <ng-container *ngIf="!library.purged; else purged">
+          <span [routerLink]="['/libraries', library.id]" class="card clickable"
+                [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, library, authService.user)">
+            <div class="card-img">
+              <app-badge [authorship]="library" class="narra-badge"></app-badge>
+              <img [src]="library.thumbnails[0]">
+            </div>
+            <div class="card-block">
+              <h4 class="card-title">{{library.name}}</h4>
+              <p class="card-text text-preview">{{library.description}}</p>
+            </div>
+          </span>
+        </ng-container>
+        <ng-template #purged>
+          <span class="card purged">
+            <div class="card-img">
+              <app-badge [purgable]="library" class="narra-badge"></app-badge>
+              <img [src]="library.thumbnails[0]">
+            </div>
+            <div class="card-block">
+              <h4 class="card-title">{{library.name}}</h4>
+              <p class="card-text text-preview">{{library.description}}</p>
+            </div>
+          </span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="clr-row" *ngIf="edit">
+      <div *ngFor="let library of project.libraries" class="clr-col-lg-2">
+        <ng-container *ngIf="!library.purged">
+          <span class="card"
+                [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, library, authService.user)">
+            <div class="card-img edit">
+              <app-badge [object]="library" class="narra-badge"></app-badge>
+              <img [src]="library.thumbnails[0]">
+            </div>
+            <div class="card-block edit">
+              <h4 class="card-title">{{library.name}}</h4>
+              <p class="card-text text-preview">{{library.description}}</p>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-sm btn-danger-outline" (click)="_removeLibrary(library)">Remove</a>
+            </div>
+          </span>
+        </ng-container>
+      </div>
+      <div class="clr-col-lg-2">
+        <span class="card clickable opacity-hover" (click)="addService.addLibrary()">
+          <div class="card-block text-center" style="margin-top: 5vh; margin-bottom: 5vh;">
+            <clr-icon shape="plus" size="42"></clr-icon>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

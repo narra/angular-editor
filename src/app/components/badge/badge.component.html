@@ -1,0 +1,13 @@
+<ng-container *ngIf="authorship">
+  <span [ngSwitch]="RelationHelper.getRelationship(authorship, authService.user)">
+    <span *ngSwitchCase="RelationType.owned" class="label label-success">owned</span>
+    <span *ngSwitchCase="RelationType.contributed" class="label label-warning">contributed</span>
+    <span *ngSwitchCase="RelationType.shared" class="label label-info">shared</span>
+  </span>
+</ng-container>
+<ng-container *ngIf="purgable && purgable.purged">
+  <span class="label label-gray">purged</span>
+</ng-container>
+<ng-container *ngIf="pendable && pendable.pending">
+  <span class="spinner spinner-md">pending</span>
+</ng-container>

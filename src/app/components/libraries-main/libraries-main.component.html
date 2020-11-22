@@ -1,0 +1,40 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <div>
+      <span *ngFor="let thumbnail of library.thumbnails">
+        <img [src]="thumbnail" style="width: 20%">
+      </span>
+    </div>
+    <h2>{{library.name}}</h2>
+    <p class="p1">{{library.description}}</p>
+    <h3>Items</h3>
+    <!-- No libraries -->
+    <app-placeholder *ngIf="!loading && !items.length">
+      We couldn't find any items in this project!
+    </app-placeholder>
+    <div style="margin: 10px auto; padding: 10px;" *ngIf="!loading && items.length">
+      <div *ngFor="let item of items; let i = index" class="clr-row" [class.selection]="!item.purged && !item.pending" [class.disabled]="item.purged || item.pending"
+           style="border-bottom: 1px solid #e3e3e3; padding-bottom: 10px;" [routerLink]="['/items', item.id]">
+        <div class="clr-col-1" style="padding-top: 0; padding-bottom: 0; background: url({{item.thumbnails[0]}}); background-repeat: no-repeat; background-size: cover;">
+        </div>
+        <div class="clr-col">
+          <div class="clr-row">
+            <div class="clr-col"><strong>{{item.name}}</strong></div>
+          </div>
+          <div class="clr-row">
+            <div class="clr-col-10">{{item.preview}}</div>
+            <div class="clr-col-2 text-right" style="padding: 0px;"><app-badge [pendable]="item" [purgable]="item"></app-badge><span *ngIf="!item.pending && !item.purged" class="label label-info">{{item.type}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

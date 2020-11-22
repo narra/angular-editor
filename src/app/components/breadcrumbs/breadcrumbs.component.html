@@ -1,0 +1,17 @@
+<nav *ngIf="authService.user && breadcrumb && (breadcrumb.project || breadcrumb.library || breadcrumb.item)" class="subnav">
+  <ul class="nav">
+    <li class="nav-item">
+      <a [routerLink]="getDashboardLink()" class="nav-link">Dashboard</a>
+    </li>
+    <li class="nav-item" *ngIf="breadcrumb.project">></li>
+    <li class="nav-item" *ngIf="breadcrumb.project && !breadcrumb.library">{{breadcrumb.project.title}}</li>
+    <li class="nav-item" *ngIf="breadcrumb.project && breadcrumb.library"><a [routerLink]="['/projects', breadcrumb.project.name]"
+                                                       class="nav-link">{{breadcrumb.project.title}}</a></li>
+    <li class="nav-item" *ngIf="breadcrumb.library">></li>
+    <li class="nav-item" *ngIf="breadcrumb.library && !breadcrumb.item">{{breadcrumb.library.name}}</li>
+    <li class="nav-item" *ngIf="breadcrumb.library && breadcrumb.item"><a [routerLink]="['/libraries', breadcrumb.library.id]"
+                                                                             class="nav-link">{{breadcrumb.library.name}}</a></li>
+    <li class="nav-item" *ngIf="breadcrumb.item">></li>
+    <li class="nav-item" *ngIf="breadcrumb.item">{{breadcrumb.item.name}}</li>
+  </ul>
+</nav>

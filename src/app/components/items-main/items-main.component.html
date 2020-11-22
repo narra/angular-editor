@@ -1,0 +1,34 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <div>
+      <span *ngFor="let thumbnail of item.thumbnails">
+        <img [src]="thumbnail" style="width: 20%">
+      </span>
+    </div>
+    <h2>{{item.name}}</h2>
+    <h4>Text</h4>
+    <p>{{MetaHelper.getMeta(item, 'text').value}}</p>
+    <h4>Metadata</h4>
+    <div style="margin: 5px auto; padding: 5px;" *ngIf="!loading && item.metadata">
+      <div *ngFor="let meta of item.metadata; let i = index" class="clr-row" style="border-bottom: 1px solid #e6e6e6; padding-top: 5px;">
+        <div class="clr-col">
+          <div class="clr-row">
+            <div class="clr-col-10" style="font-size: smaller;"><strong>{{meta.name}}</strong></div>
+            <div class="clr-col-2 text-right" style="padding: 0px;"><span class="label" [class.label-info]="meta.generator != 'source'">{{meta.generator}}</span></div>
+          </div>
+          <div class="clr-row">
+            <div class="clr-col" style="font-size: smaller;">{{meta.value}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

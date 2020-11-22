@@ -1,0 +1,51 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>{{project.title}}</h2>
+    <h3>Settings</h3>
+    <form clrForm>
+      <clr-select-container>
+        <label>Scenario</label>
+        <select clrSelect name="scenario" [(ngModel)]="project.scenario" #scenario="ngModel"
+                (ngModelChange)="_modelChanged()" required>
+          <option *ngFor="let scenario of scenarios" [value]="scenario">{{scenario.name}}</option>
+        </select>
+        <clr-control-helper *ngIf="project.scenario">{{project.scenario.description}}</clr-control-helper>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-select-container>
+      <clr-toggle-container>
+        <label>Public</label>
+        <clr-toggle-wrapper>
+          <input type="checkbox" clrToggle name="options" [(ngModel)]="project.public"
+                 (ngModelChange)="_modelChanged()"/>
+        </clr-toggle-wrapper>
+        <clr-control-helper>Wheter the project will be visible for the public</clr-control-helper>
+      </clr-toggle-container>
+      <div class="clr-form-control clr-row" *ngIf="changed || relation === RelationType.owned">
+        <label class="clr-control-label">Actions</label>
+        <button class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateProject()">Update Project
+        </button>
+        <button class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">Delete Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<clr-modal *ngIf="project" [(clrModalOpen)]="delete">
+  <h3 class="modal-title">Delete project</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{project.title}}</strong>? This action is permanent and cannot be
+      recovered.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="delete = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="_deleteProject()">Delete</button>
+  </div>
+</clr-modal>

@@ -1,0 +1,27 @@
+<div class="content-container" *ngIf="type">
+  <div class="content-area">
+    <div class="clr-row clr-align-items-center" style="height: 80vh;">
+      <div class="clr-col-12 text-center">
+        <clr-icon shape="info-circle" size="72"></clr-icon>
+        <div [ngTemplateOutlet]="content"></div>
+        <div>
+          Create a new one
+          <button (click)="add()" type="button" class="btn btn-icon btn-sm" aria-label="home">
+            <clr-icon shape="plus" size="16"></clr-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="clr-row clr-align-items-center" style="height: 40vh;" *ngIf="!type">
+  <div class="clr-col-12 text-center">
+    <clr-icon shape="info-circle" size="72"></clr-icon>
+    <div [ngTemplateOutlet]="content"></div>
+  </div>
+</div>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>

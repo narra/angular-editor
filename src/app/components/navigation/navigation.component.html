@@ -1,0 +1,14 @@
+<section class="sidenav-content">
+  <span *ngFor="let element of provider.getElements()" class="sidenav-content">
+    <ng-container
+      *ngIf="element.allow.length === 0 || this.userPreferencesService.superuser && UserHelper.isAdmin(authService.user) || element.allow.includes(relation)">
+    <!-- Internal link -->
+    <a *ngIf="element.type === NavigationType.internal" [routerLink]="element.segments" routerLinkActive="active"
+       class="nav-link">{{element.title}}</a>
+      <!-- External link -->
+    <a *ngIf="element.type === NavigationType.extenral" [href]="element.segments[0]" class="nav-link"
+       [target]="element.target">{{element.title}}
+      <clr-icon shape="link"></clr-icon></a>
+      </ng-container>
+  </span>
+</section>

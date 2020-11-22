@@ -1,0 +1,46 @@
+<clr-wizard #wizard [(clrWizardOpen)]="open" clrWizardSize="lg">
+  <clr-wizard-title>Add Library</clr-wizard-title>
+
+  <clr-wizard-button [type]="'cancel'" *ngIf="!loadingFlag">Cancel</clr-wizard-button>
+  <clr-wizard-button [type]="'finish'" [clrWizardButtonDisabled]="loadingFlag">
+    <span *ngIf="!loadingFlag">Add</span>
+    <span *ngIf="loadingFlag">Please wait...</span>
+  </clr-wizard-button>
+
+  <clr-wizard-page clrWizardPagePreventDefault="true" (clrWizardPageOnCancel)="doCancel()"
+                   (clrWizardPageOnCommit)="onFinish()" [clrWizardPageNextDisabled]="!selection">
+    <ng-template clrPageTitle>Select Libraries</ng-template>
+
+    <clr-spinner *ngIf="loadingFlag">
+      Loading
+    </clr-spinner>
+
+    <ng-container *ngIf="!loadingFlag">
+      <div class="clr-row clr-align-items-center" style="height: 40vh;" *ngIf="!libraries.length">
+        <div class="clr-col-12 text-center">
+          <clr-icon shape="info-circle" size="72"></clr-icon>
+          <div>We couldn't find any libraries.</div>
+        </div>
+      </div>
+
+      <div *ngFor="let library of libraries; let i = index" class="clr-row selection"
+           [class.selected]="library.selected" (click)="library.selected = select(library, library.selected)"
+           style="border-bottom: 1px solid #e3e3e3; padding-bottom: 5px; padding-top: 5px;">
+        <div class="clr-col-2"
+             style="padding-top: 0; padding-bottom: 0; min-height: 50px; background: url({{library.thumbnails[0]}}); background-repeat: no-repeat; background-size: cover;"></div>
+        <div class="clr-col">
+          <div class="clr-row">
+            <div class="clr-col"><strong>{{library.name}}</strong></div>
+          </div>
+          <div class="clr-row">
+            <div class="clr-col">{{library.description}}</div>
+          </div>
+        </div>
+        <div class="clr-col-2 text-right" style="padding: 0;">
+          <clr-icon *ngIf="library.selected" shape="check-circle" class="is-success" size="48"
+                    style="opacity: 50%; margin-left: 5px;"></clr-icon>
+        </div>
+      </div>
+    </ng-container>
+  </clr-wizard-page>
+</clr-wizard>

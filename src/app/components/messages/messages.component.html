@@ -1,0 +1,23 @@
+﻿<clr-alerts>
+  <clr-alert *ngFor="let message of messages" [clrAlertAppLevel]="true" [clrAlertType]="message.type"
+             (clrAlertClosedChange)="removeMessage(message)" class="alert-fade">
+    <clr-alert-item>
+        <div class="alert-text">
+            {{message.message}}
+        </div>
+        <div class="alert-actions" *ngIf="message.trace">
+          <button class="btn alert-action" (click)="showDetails(message)">Show details</button>
+        </div>
+    </clr-alert-item>
+  </clr-alert>
+</clr-alerts>
+
+<clr-modal [(clrModalOpen)]="detailsOpen" [clrModalClosable]="false" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
+  <h3 class="modal-title">{{detailsMessage.message}}</h3>
+  <div class="modal-body">
+    <pre>{{detailsMessage.trace.join('\n')}}</pre>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="detailsOpen = false">Close</button>
+  </div>
+</clr-modal>

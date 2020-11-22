@@ -1,0 +1,14 @@
+.selection {
+  cursor: pointer;
+  opacity: 80%;
+}
+
+.selection:hover {
+  opacity: 100%;
+  background-color: rgba(216, 227, 233, 0.25);
+}
+
+.disabled {
+  opacity: 50%;
+  filter: grayscale(100%);
+}

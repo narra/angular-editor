@@ -1,0 +1,28 @@
+<div class="login-wrapper">
+  <form class="login" *ngIf="loading">
+    <section class="title">
+      <h3 class="welcome">Welcome to</h3>
+      narra editor
+    </section>
+    <div class="login-group">
+      <clr-spinner>Loading data</clr-spinner>
+    </div>
+  </form>
+
+  <form class="login" *ngIf="!loading">
+    <section class="title">
+      <h3 class="welcome">Welcome to</h3>
+      narra editor
+      <h5 class="hint">Select a service to authenticate</h5>
+    </section>
+    <div class="login-group">
+      <clr-select-container>
+        <label class="clr-sr-only">User Role</label>
+        <select clrSelect name="type" [(ngModel)]="selected">
+          <option *ngFor="let provider of providers" [ngValue]="provider">{{provider.name|titlecase}}</option>
+        </select>
+      </clr-select-container>
+      <button class="btn btn-primary" (click)="authenticate()">NEXT</button>
+    </div>
+  </form>
+</div>

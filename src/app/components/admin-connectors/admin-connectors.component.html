@@ -1,0 +1,29 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="this.adminNavigationService.provider"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>Connectors</h2>
+    <clr-datagrid>
+      <clr-dg-column>Title</clr-dg-column>
+      <clr-dg-column>Description</clr-dg-column>
+      <clr-dg-column>Priority</clr-dg-column>
+
+      <clr-dg-placeholder>We couldn't find any connectors!</clr-dg-placeholder>
+
+      <clr-dg-row *ngFor="let connector of connectors">
+        <clr-dg-cell>{{connector.title}}</clr-dg-cell>
+        <clr-dg-cell>{{connector.description}}</clr-dg-cell>
+        <clr-dg-cell>{{connector.priority}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>{{connectors.length}} connectors</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
+

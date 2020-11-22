@@ -1,0 +1,41 @@
+<!-- Loading -->
+<app-loader *ngIf="loading"></app-loader>
+<!-- No libraries -->
+<app-placeholder [wizard]="WizardType.create_library" *ngIf="!loading && !libraries.length">
+  We couldn't find any libraries you can contribute to!
+</app-placeholder>
+<!-- Libraries dashbaord -->
+<div *ngIf="!loading && libraries" class="content-container">
+  <div class="content-area">
+    <div class="clr-row">
+      <div *ngFor="let library of libraries" class="clr-col-lg-3 clr-col-12">
+        <ng-container *ngIf="!library.purged; else purged">
+          <a [routerLink]="library.id" class="card clickable"
+             [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, library, authService.user)">
+            <div class="card-img">
+              <app-badge [authorship]="library" class="narra-badge"></app-badge>
+              <img [src]="library.thumbnails[0]">
+            </div>
+            <div class="card-block">
+              <h4 class="card-title">{{library.name}}</h4>
+              <p class="card-text">{{library.description}}</p>
+            </div>
+          </a>
+        </ng-container>
+        <ng-template #purged>
+          <span class="card purged">
+            <div class="card-img">
+              <img [src]="library.thumbnails[0]">
+            </div>
+            <div class="card-block">
+              <h4 class="card-title">{{library.name}}
+                <app-badge [object]="library"></app-badge>
+              </h4>
+              <p class="card-text">{{library.description}}</p>
+            </div>
+          </span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

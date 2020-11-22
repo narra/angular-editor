@@ -1,0 +1,30 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="this.adminNavigationService.provider"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>Generators</h2>
+    <clr-datagrid>
+      <clr-dg-column>Title</clr-dg-column>
+      <clr-dg-column>Description</clr-dg-column>
+      <clr-dg-column>Dependency</clr-dg-column>
+      <clr-dg-column>Priority</clr-dg-column>
+
+      <clr-dg-placeholder>We couldn't find any generators!</clr-dg-placeholder>
+
+      <clr-dg-row *ngFor="let generator of generators">
+        <clr-dg-cell>{{generator.title}}</clr-dg-cell>
+        <clr-dg-cell>{{generator.description}}</clr-dg-cell>
+        <clr-dg-cell>{{generator.dependency}}</clr-dg-cell>
+        <clr-dg-cell>{{generator.priority}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>{{generators.length}} generators</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>

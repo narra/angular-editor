@@ -1,0 +1,25 @@
+<!-- Loading -->
+<app-loader *ngIf="loading"></app-loader>
+<!-- No scenarios -->
+<app-placeholder [wizard]="WizardType.scenario" *ngIf="!loading && !scenarios.length">
+  We couldn't find any scenarios!
+</app-placeholder>
+<!-- Scenarios dashbaord -->
+<div *ngIf="!loading && scenarios" class="content-container">
+  <div class="content-area">
+    <div class="clr-row">
+      <div *ngFor="let scenario of scenarios" class="clr-col-lg-3 clr-col-12">
+        <span class="card">
+          <div class="card-img">
+            <app-badge [authorship]="scenario" class="narra-badge"></app-badge>
+            <img [src]="scenario.thumbnails[0]">
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{scenario.name}}</h4>
+            <p class="card-text">{{scenario.description}}</p>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

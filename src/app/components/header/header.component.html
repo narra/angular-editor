@@ -1,0 +1,51 @@
+<clr-header *ngIf="authService.user">
+  <div class="branding">
+    <a routerLink="/" class="nav-link">
+      <img src="assets/logo_white.png" class="header-logo">
+    </a>
+  </div>
+  <div class="header-nav">
+    <a routerLink="/projects" routerLinkActive="active" class="nav-link nav-text">Projects</a>
+    <a routerLink="/libraries" routerLinkActive="active" class="nav-link nav-text">Libraries</a>
+    <a *ngIf="this.userPreferencesService.superuser && UserHelper.isAdmin(authService.user)" routerLink="/admin" routerLinkActive="active" class="nav-link nav-text">Admin</a>
+    <clr-dropdown>
+      <button class="nav-link nav-icon" clrDropdownTrigger aria-label="open add wizard">
+        <clr-icon shape="plus" class="is-white"></clr-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <button (click)="this.addService.createItem()" clrDropdownItem>Item</button>
+        <button (click)="this.addService.createLibrary()" clrDropdownItem>Library</button>
+        <button (click)="this.addService.createProject()" clrDropdownItem>Project</button>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+  </div>
+  <div class="header-actions">
+    <clr-toggle-wrapper class="nav-link" *ngIf="UserHelper.isAdmin(authService.user)">
+      <input type="checkbox" clrToggle [(ngModel)]="userPreferencesService.superuser" name="superuser" />
+      <label style="color: white;">Superuser</label>
+    </clr-toggle-wrapper>
+    <clr-dropdown *ngIf="events && events.length > 0">
+      <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
+        Queue <span class="badge">{{events.length}}</span>
+        <clr-icon shape="caret down"></clr-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <div *ngFor="let event of events" class="event">
+          <span class="p6">{{getEventTitle(event)}}</span>
+          <span class="p8" style="margin-left: 5px;" *ngIf="event.progress > 0">{{event.message}}</span>
+          <div *ngIf="event.progress === 0" class="progress loop" style="height: 5px;"><progress></progress></div>
+          <div *ngIf="event.progress > 0" class="progress" style="height: 5px;"><progress max="100" [value]="event.progress*100"></progress></div>
+        </div>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+    <clr-dropdown>
+      <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
+        {{authService.user.name}}
+        <clr-icon shape="caret down"></clr-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <a (click)="authService.logout()" clrDropdownItem>Log out</a>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+  </div>
+</clr-header>
