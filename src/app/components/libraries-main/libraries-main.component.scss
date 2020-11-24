@@ -1,14 +1,14 @@
 .selection {
   cursor: pointer;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .selection:hover {
-  opacity: 100%;
+  opacity: 1.0;
   background-color: rgba(216, 227, 233, 0.25);
 }
 
 .disabled {
-  opacity: 50%;
+  opacity: 0.5;
   filter: grayscale(100%);
 }

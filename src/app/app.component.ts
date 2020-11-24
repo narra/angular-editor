@@ -23,6 +23,8 @@
 
 import {Component} from '@angular/core';
 import {narra} from '@narra/api';
+import {HttpClient} from '@angular/common/http';
+import {Environment} from '@app/models';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +33,16 @@ import {narra} from '@narra/api';
 })
 export class AppComponent {
 
-  constructor(private narraServerService: narra.ServerService) {
+  constructor(
+    private http: HttpClient,
+    private narraServerService: narra.ServerService
+  ) {
+    // set propper API server based on environemnt variable
+    this.http.get<Environment>('assets/environment.json').toPromise().then((env) => {
+      // check if exists
+      if (env.NARRA_API_HOSTNAME) {
+        this.narraServerService.apiServer = `http://${env.NARRA_API_HOSTNAME}`;
+      }
+    });
   }
 }

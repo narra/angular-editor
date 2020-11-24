@@ -1,16 +1,16 @@
 .selected {
   cursor: pointer;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .selected:hover, .deselected:hover {
-  opacity: 100%;
+  opacity: 1.0;
   background-color: rgba(216, 227, 233, 0.25);
 }
 
 .deselected {
   cursor: pointer;
-  opacity: 25%;
+  opacity: 0.25;
   filter: grayscale(100%);
 }
 

@@ -1,13 +1,13 @@
 .selection {
   cursor: pointer;
-  opacity: 75%;
+  opacity: 0.75;
 }
 
 .selection:hover {
-  opacity: 100%;
+  opacity: 1.0;
 }
 
 .selected {
-  opacity: 100%;
+  opacity: 1.0;
   background-color: rgba(216, 227, 233, 0.25);
 }

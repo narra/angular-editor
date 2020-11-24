@@ -33,7 +33,7 @@
            style="border: dashed 1px #979797; margin: 10px auto;">
         <div class="clr-col-1" style="padding: 0;">
           <clr-icon [class.is-error]="file.error" [class.is-success]="file.success" shape="file" size="48"
-                    style="opacity: 25%;"></clr-icon>
+                    style="opacity: 0.25;"></clr-icon>
         </div>
         <div class="clr-col">
           <div><strong>{{ file.name }}</strong></div>
@@ -49,9 +49,9 @@
         </div>
         <div class="clr-col-2 text-right" style="padding: 0;">
           <clr-icon (click)="uploadFile(i, true, false)" *ngIf="file.error" shape="refresh" size="24"
-                    style="opacity: 20%; margin-left: 5px; cursor: pointer;"></clr-icon>
+                    style="opacity: 0.2; margin-left: 5px; cursor: pointer;"></clr-icon>
           <clr-icon (click)="removeFile(i)" *ngIf="file.success || file.error" shape="times" size="36"
-                    style="opacity: 20%; cursor: pointer;"></clr-icon>
+                    style="opacity: 0.2; cursor: pointer;"></clr-icon>
         </div>
       </div>
     </div>

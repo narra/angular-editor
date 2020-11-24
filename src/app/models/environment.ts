@@ -21,10 +21,6 @@
  * Authors: Michal Mocnak <michal@narra.eu>
  */
 
-export * from './event';
-export * from './navigation';
-export * from './navigation-element';
-export * from './breadcrumb';
-export * from './environment';
-export * from './publisher';
-export * from './user-preferences';
+export interface Environment {
+  NARRA_API_HOSTNAME: string;
+}

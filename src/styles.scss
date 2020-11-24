@@ -12,11 +12,11 @@
 }
 
 .purged {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .edit {
-  opacity: 75%;
+  opacity: 0.75;
 }
 
 .text-preview {
@@ -36,9 +36,9 @@
 }
 
 .opacity-hover {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .opacity-hover:hover {
-  opacity: 100%;
+  opacity: 1.0;
 }
