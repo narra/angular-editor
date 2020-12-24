@@ -22,7 +22,7 @@
  */
 
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, APP_INITIALIZER} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -31,6 +31,7 @@ import {ClarityModule} from '@clr/angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {ErrorInterceptor, JwtInterceptor} from '@app/interceptors';
+import { AppInitService} from '@app/app-init.service';
 import {
   AddLibraryWizardComponent,
   CreateItemWizardComponent,
@@ -62,6 +63,12 @@ import {
   ScenariosDashboardComponent
 } from '@app/components';
 import {DropDirective} from '@app/directives';
+
+export function initializeApp(appInitService: AppInitService) {
+  return (): Promise<any> => {
+    return appInitService.init();
+  };
+}
 
 @NgModule({
   declarations: [
@@ -106,6 +113,8 @@ import {DropDirective} from '@app/directives';
     FormsModule
   ],
   providers: [
+    AppInitService,
+    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppInitService], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
   ],

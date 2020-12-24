@@ -21,14 +21,31 @@
  * Authors: Michal Mocnak <michal@narra.eu>
  */
 
-import {Component} from '@angular/core';
+import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {narra} from '@narra/api';
+import {Environment} from '@app/models';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+@Injectable({
+  providedIn: 'root'
 })
-export class AppComponent {
+export class AppInitService {
 
-  constructor() {}
+  constructor(
+    private http: HttpClient,
+    private narraServerService: narra.ServerService
+  ) {}
+
+  public init(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http.get<Environment>('assets/environment.json').toPromise().then((env) => {
+        // check if exists
+        if (env.NARRA_API_HOSTNAME) {
+          this.narraServerService.apiServer = `http://${env.NARRA_API_HOSTNAME}`;
+        }
+        // resolve
+        resolve();
+      });
+    });
+  }
 }
