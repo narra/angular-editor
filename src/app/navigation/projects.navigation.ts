@@ -46,6 +46,13 @@ export class ProjectsNavigation extends Navigation {
         allow: [RelationType.owned, RelationType.contributed]
       },
       {
+        title: 'Metadata',
+        type: NavigationType.internal,
+        segments: ['/projects', params.get('name'), 'metadata'],
+        target: undefined,
+        allow: [RelationType.owned, RelationType.contributed]
+      },
+      {
         title: 'Settings',
         type: NavigationType.internal,
         segments: ['/projects', params.get('name'), 'settings'],

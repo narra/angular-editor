@@ -1,0 +1,79 @@
+<div class="content-container">
+  <nav class="sidenav">
+    <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
+  </nav>
+
+  <div class="content-area" *ngIf="loading">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="content-area" *ngIf="!loading">
+    <h2>{{item.name}}</h2>
+    <div class="clr-row clr-justify-content-between">
+      <div class="clr-col-4">
+        <h3>Metadata</h3>
+      </div>
+      <div class="clr-col-4" class="text-right" style="margin-top: 15px;">
+        <button type="button" class="btn btn-sm btn-icon" aria-label="plus" (click)="openAddDialog = true">
+          <clr-icon shape="plus"></clr-icon>
+          Add
+        </button>
+      </div>
+    </div>
+    <clr-datagrid>
+      <clr-dg-column>Name</clr-dg-column>
+      <clr-dg-column>Value</clr-dg-column>
+      <clr-dg-column>Generator</clr-dg-column>
+
+      <clr-dg-placeholder>We couldn't find any metadata!</clr-dg-placeholder>
+
+      <clr-dg-row *clrDgItems="let meta of item.metadata" [clrDgItem]="meta">
+        <clr-dg-cell>{{meta.name}}</clr-dg-cell>
+        <clr-dg-cell>{{meta.value}}</clr-dg-cell>
+        <clr-dg-cell>{{meta.generator}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-detail *clrIfDetail="let detail">
+        <clr-dg-detail-header>{{detail.name}}</clr-dg-detail-header>
+        <clr-dg-detail-body style="margin-bottom: 20px;">
+          <form clrForm #formUpdate="ngForm" class="clr-form-horizontal">
+            <clr-textarea-container>
+              <label>Value</label>
+              <textarea clrTextarea [(ngModel)]="detail.value" style="width: 100%; height: 100px;" name="value"
+                        [disabled]="detail.generator == 'source'" required></textarea>
+            </clr-textarea-container>
+          </form>
+          <div style="text-align: right;">
+            <button class="btn btn-sm btn-danger" (click)="_deleteMeta(detail)" *ngIf="detail.generator != 'source'">Delete</button>
+            <button class="btn btn-sm btn-success-outline" (click)="_updateMeta(detail)"
+                    [disabled]="!formUpdate.valid" *ngIf="detail.generator != 'source'">Update
+            </button>
+          </div>
+        </clr-dg-detail-body>
+      </clr-dg-detail>
+
+      <clr-dg-footer>{{item.metadata.length}} meta</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="openAddDialog">
+  <h3 class="modal-title">Add Metadata</h3>
+  <div class="modal-body">
+    <form clrForm #formAdd="ngForm">
+      <clr-input-container>
+        <label>Name</label>
+        <input placeholder="Enter your first name" clrInput [(ngModel)]="newMeta.name" name="name" required/>
+      </clr-input-container>
+      <clr-textarea-container>
+        <label>Value</label>
+        <textarea clrTextarea [(ngModel)]="newMeta.value" style="width: 42vw; height: 100px;" name="value"
+                  required></textarea>
+      </clr-textarea-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="openAddDialog = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="_addMeta()" [disabled]="!formAdd.valid">Add</button>
+  </div>
+</clr-modal>

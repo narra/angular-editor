@@ -16,13 +16,33 @@
       <clr-dg-column>Roles</clr-dg-column>
       <clr-dg-column>Identities</clr-dg-column>
 
-      <clr-dg-row *ngFor="let user of users">
+      <clr-dg-row *clrDgItems="let user of users" [clrDgItem]="user">
         <clr-dg-cell>{{user.name}}</clr-dg-cell>
         <clr-dg-cell>{{user.username}}</clr-dg-cell>
         <clr-dg-cell>{{user.email}}</clr-dg-cell>
         <clr-dg-cell>{{user.roles}}</clr-dg-cell>
-        <clr-dg-cell><span *ngFor="let identity of user.identities; let isLast=last">{{identity.name}}{{isLast ? '' : ','}}</span></clr-dg-cell>
+        <clr-dg-cell><span
+          *ngFor="let identity of user.identities; let isLast=last">{{identity.name}}{{isLast ? '' : ','}}</span>
+        </clr-dg-cell>
       </clr-dg-row>
+
+      <clr-dg-detail *clrIfDetail="let detail">
+        <clr-dg-detail-header>{{detail.name}}</clr-dg-detail-header>
+        <clr-dg-detail-body style="margin-bottom: 20px;">
+          <clr-datagrid [clrDgPreserveSelection]="true" [clrDgRowSelection]="true" [(clrDgSelected)]="detail.roles">
+            <clr-dg-column>Role</clr-dg-column>
+            <clr-dg-row *clrDgItems="let role of Object.keys(RoleType)" [clrDgItem]="role">
+              <clr-dg-cell>{{role}}</clr-dg-cell>
+            </clr-dg-row>
+          </clr-datagrid>
+
+          <div style="margin-top: 10px; text-align: right;">
+            <button type="button" class="btn btn-sm btn-danger" (click)="_deleteUser(detail)"
+                    *ngIf="authService.user.username != detail.username">Delete</button>
+            <button type="button" class="btn btn-sm btn-success-outline" (click)="_updateUser(detail)">Update</button>
+          </div>
+        </clr-dg-detail-body>
+      </clr-dg-detail>
 
       <clr-dg-footer>{{users.length}} users</clr-dg-footer>
     </clr-datagrid>

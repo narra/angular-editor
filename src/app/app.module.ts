@@ -31,7 +31,7 @@ import {ClarityModule} from '@clr/angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {ErrorInterceptor, JwtInterceptor} from '@app/interceptors';
-import { AppInitService} from '@app/app-init.service';
+import {AppInitService} from '@app/app-init.service';
 import {
   AddLibraryWizardComponent,
   CreateItemWizardComponent,
@@ -47,9 +47,11 @@ import {
   BreadcrumbsComponent,
   HeaderComponent,
   ItemsMainComponent,
+  ItemsMetadataComponent,
   LibrariesContributorsComponent,
   LibrariesDashboardComponent,
   LibrariesMainComponent,
+  LibrariesMetadataComponent,
   LibrariesSettingsComponent,
   LoaderComponent,
   LoginComponent,
@@ -60,6 +62,7 @@ import {
   ProjectsDashboardComponent,
   ProjectsMainComponent,
   ProjectsSettingsComponent,
+  ProjectsMetadataComponent,
   ScenariosDashboardComponent
 } from '@app/components';
 import {DropDirective} from '@app/directives';
@@ -101,7 +104,10 @@ export function initializeApp(appInitService: AppInitService) {
     AddLibraryWizardComponent,
     DropDirective,
     ItemsMainComponent,
-    MessagesComponent
+    MessagesComponent,
+    ProjectsMetadataComponent,
+    LibrariesMetadataComponent,
+    ItemsMetadataComponent
   ],
   imports: [
     BrowserModule,

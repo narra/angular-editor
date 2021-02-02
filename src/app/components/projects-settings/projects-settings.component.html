@@ -30,9 +30,9 @@
       </clr-toggle-container>
       <div class="clr-form-control clr-row" *ngIf="changed || relation === RelationType.owned">
         <label class="clr-control-label">Actions</label>
-        <button class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateProject()">Update Project
+        <button type="button" class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateProject()">Update Project
         </button>
-        <button class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">Delete Project</button>
+        <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">Delete Project</button>
       </div>
     </form>
   </div>

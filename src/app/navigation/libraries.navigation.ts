@@ -46,6 +46,13 @@ export class LibrariesNavigation extends Navigation {
         allow: [RelationType.owned, RelationType.contributed]
       },
       {
+        title: 'Metadata',
+        type: NavigationType.internal,
+        segments: ['/libraries', params.get('id'), 'metadata'],
+        target: undefined,
+        allow: [RelationType.owned, RelationType.contributed]
+      },
+      {
         title: 'Settings',
         type: NavigationType.internal,
         segments: ['/libraries', params.get('id'), 'settings'],

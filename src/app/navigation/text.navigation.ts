@@ -22,7 +22,7 @@
  */
 
 import {Navigation} from '@app/models';
-import {NavigationType} from '@app/enums';
+import {NavigationType, RelationType} from '@app/enums';
 import {ParamMap} from '@angular/router';
 
 export class TextNavigation extends Navigation {
@@ -37,7 +37,14 @@ export class TextNavigation extends Navigation {
         segments: ['/items', params.get('id'), 'main'],
         target: undefined,
         allow: []
-      }
+      },
+      {
+        title: 'Metadata',
+        type: NavigationType.internal,
+        segments: ['/items', params.get('id'), 'metadata'],
+        target: undefined,
+        allow: []
+      },
     ]);
   }
 }

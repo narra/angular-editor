@@ -88,7 +88,7 @@ export class ItemsMainComponent implements OnInit, OnDestroy {
     // load data
     this.narraItemService.getItem(this.params.get('id')).subscribe((response) => {
       // get item
-      this.item = response.item
+      this.item = response.item;
       // update breadcrumbs
       this.breadcrumbsService.updateItem(this.item.id, this.item.name);
       // loading done

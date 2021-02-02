@@ -16,19 +16,5 @@
     <h2>{{item.name}}</h2>
     <h4>Text</h4>
     <p>{{MetaHelper.getMeta(item, 'text').value}}</p>
-    <h4>Metadata</h4>
-    <div style="margin: 5px auto; padding: 5px;" *ngIf="!loading && item.metadata">
-      <div *ngFor="let meta of item.metadata; let i = index" class="clr-row" style="border-bottom: 1px solid #e6e6e6; padding-top: 5px;">
-        <div class="clr-col">
-          <div class="clr-row">
-            <div class="clr-col-10" style="font-size: smaller;"><strong>{{meta.name}}</strong></div>
-            <div class="clr-col-2 text-right" style="padding: 0px;"><span class="label" [class.label-info]="meta.generator != 'source'">{{meta.generator}}</span></div>
-          </div>
-          <div class="clr-row">
-            <div class="clr-col" style="font-size: smaller;">{{meta.value}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
