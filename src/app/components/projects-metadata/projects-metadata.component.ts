@@ -98,7 +98,7 @@ export class ProjectsMetadataComponent implements OnInit, OnDestroy {
       // get project
       this.project = response.project;
       // breadcrumbs
-      this.breadcrumbsService.updateProject(this.project.name, this.project.title);
+      this.breadcrumbsService.updateProject(this.project.id, this.project.name);
       // relation
       this.relation = RelationHelper.getRelationship(this.project, this.authService.user);
       // clean new meta fields
@@ -122,7 +122,7 @@ export class ProjectsMetadataComponent implements OnInit, OnDestroy {
     // set loading flag
     this.loading = true;
     // update project
-    this.projectService.updateProjectMeta(this.project.name, meta).subscribe((response) => {
+    this.projectService.updateProjectMeta(this.project.id, meta).subscribe((response) => {
       // broadcast event
       this.eventService.broadcastProjectEvent(this.project, EventType.project_updated);
       // reload data
@@ -136,7 +136,7 @@ export class ProjectsMetadataComponent implements OnInit, OnDestroy {
     // set loading flag
     this.loading = true;
     // update project
-    this.projectService.addProjectMeta(this.project.name, this.newMeta).subscribe((response) => {
+    this.projectService.addProjectMeta(this.project.id, this.newMeta).subscribe((response) => {
       // broadcast event
       this.eventService.broadcastProjectEvent(this.project, EventType.project_updated);
       // reload data
@@ -148,7 +148,7 @@ export class ProjectsMetadataComponent implements OnInit, OnDestroy {
     // set loading flag
     this.loading = true;
     // update project
-    this.projectService.deleteProjectMeta(this.project.name, meta).subscribe((response) => {
+    this.projectService.deleteProjectMeta(this.project.id, meta).subscribe((response) => {
       // broadcast event
       this.eventService.broadcastProjectEvent(this.project, EventType.project_updated);
       // reload data

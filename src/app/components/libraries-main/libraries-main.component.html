@@ -8,11 +8,6 @@
   </div>
 
   <div class="content-area" *ngIf="!loading">
-    <div>
-      <span *ngFor="let thumbnail of library.thumbnails">
-        <img [src]="thumbnail" style="width: 20%">
-      </span>
-    </div>
     <h2>{{library.name}}</h2>
     <p class="p1">{{library.description}}</p>
     <h3>Items</h3>
@@ -21,20 +16,26 @@
       We couldn't find any items in this project!
     </app-placeholder>
     <div style="margin: 10px auto; padding: 10px;" *ngIf="!loading && items.length">
-      <div *ngFor="let item of items" class="clr-row" [class.selection]="!item.purged && !item.pending" [class.disabled]="item.purged || item.pending"
-           style="border-bottom: 1px solid #e3e3e3; padding-bottom: 10px;" [routerLink]="['/items', item.id]">
-        <div class="clr-col-1" style="padding-top: 0; padding-bottom: 0; background: url({{item.thumbnails[0]}}); background-repeat: no-repeat; background-size: cover;">
-        </div>
-        <div class="clr-col">
-          <div class="clr-row">
-            <div class="clr-col"><strong>{{item.name}}</strong></div>
-          </div>
-          <div class="clr-row">
-            <div class="clr-col-10">{{item.preview}}</div>
-            <div class="clr-col-2 text-right" style="padding: 0px;"><app-badge [pendable]="item" [purgable]="item"></app-badge><span *ngIf="!item.pending && !item.purged" class="label label-info">{{item.type}}</span></div>
-          </div>
-        </div>
-      </div>
+      <clr-datagrid>
+        <clr-dg-column style="width: 5vw;"></clr-dg-column>
+        <clr-dg-column style="width: 10vw;">Name</clr-dg-column>
+        <clr-dg-column></clr-dg-column>
+        <clr-dg-column style="width: 5vw;"></clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let item of items" [routerLink]="['/items', item.id]" class="hand">
+          <clr-dg-cell style="padding: 0; background-repeat: no-repeat; background-size: cover; background: url({{item.thumbnails[0]}});"></clr-dg-cell>
+          <clr-dg-cell style="padding: 16px;"><span class="p4">{{item.name}}</span></clr-dg-cell>
+          <clr-dg-cell style="padding: 16px;"><span class="p3">{{item.preview}}</span></clr-dg-cell>
+          <clr-dg-cell style="padding: 16px; text-align: center;"><app-badge [pendable]="item" [purgable]="item"></app-badge><span *ngIf="!item.pending && !item.purged" class="label label-info">{{item.type}}</span></clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="20">
+            <clr-dg-page-size [clrPageSizeOptions]="[20,50,100,200]">Items per page</clr-dg-page-size>
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} items
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
     </div>
   </div>
 </div>

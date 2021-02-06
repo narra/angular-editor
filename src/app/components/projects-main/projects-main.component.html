@@ -8,24 +8,19 @@
   </div>
 
   <div class="content-area" *ngIf="!loading">
-    <div>
-      <span *ngFor="let thumbnail of project.thumbnails">
-        <img [src]="thumbnail" style="width: 20%">
-      </span>
-    </div>
+    <h2>{{project.name}}</h2>
+    <p class="p1">{{project.description}}</p>
     <div class="clr-row clr-justify-content-between">
       <div class="clr-col-4">
-        <h2>{{project.title}}</h2>
+        <h3>Libraries</h3>
       </div>
-      <div class="clr-col-4" class="text-right" style="margin-top: 35px;">
+      <div class="clr-col-4" class="text-right" style="margin-top: 15px;">
         <clr-toggle-wrapper>
           <input type="checkbox" clrToggle [(ngModel)]="edit" name="edit"/>
           <label>Edit Mode</label>
         </clr-toggle-wrapper>
       </div>
     </div>
-    <p class="p1">{{project.description}}</p>
-    <h3>Libraries</h3>
     <!-- No libraries -->
     <app-placeholder *ngIf="!loading && !edit && !project.libraries.length">
       We couldn't find any libraries assigned to this project!
@@ -40,8 +35,7 @@
               <img [src]="library.thumbnails[0]">
             </div>
             <div class="card-block">
-              <h4 class="card-title">{{library.name}}</h4>
-              <p class="card-text text-preview">{{library.description}}</p>
+              <h6 class="card-title">{{library.name}}</h6>
             </div>
           </span>
         </ng-container>

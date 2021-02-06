@@ -8,7 +8,7 @@
 <div *ngIf="!loading && libraries" class="content-container">
   <div class="content-area">
     <div class="clr-row">
-      <div *ngFor="let library of libraries" class="clr-col-lg-3 clr-col-12">
+      <div *ngFor="let library of libraries" class="clr-col-lg-2 clr-col-12">
         <ng-container *ngIf="!library.purged; else purged">
           <a [routerLink]="library.id" class="card clickable"
              [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, library, authService.user)">

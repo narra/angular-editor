@@ -30,7 +30,7 @@
     <form clrForm #formBasic="ngForm" [class.hidden]="loadingFlag">
       <clr-input-container>
         <label>Name</label>
-        <input clrInput [(ngModel)]="project.title" name="title" #name="ngModel" required/>
+        <input clrInput [(ngModel)]="project.name" name="title" #name="ngModel" required/>
         <clr-control-error>This field is required!</clr-control-error>
       </clr-input-container>
 

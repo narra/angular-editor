@@ -93,7 +93,7 @@ export class ProjectsMainComponent implements OnInit, OnDestroy {
       // get project
       this.project = response.project;
       // breadcrumbs
-      this.breadcrumbsService.updateProject(this.project.name, this.project.title);
+      this.breadcrumbsService.updateProject(this.project.id, this.project.name);
       // relation
       this.relation = RelationHelper.getRelationship(this.project, this.authService.user);
       // loading done

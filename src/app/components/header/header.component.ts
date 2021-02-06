@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else if (event.library) {
       return event.library.name;
     } else if (event.project) {
-      return event.project.title;
+      return event.project.name;
     } else {
       return 'Undefined';
     }

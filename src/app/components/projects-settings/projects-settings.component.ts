@@ -90,7 +90,7 @@ export class ProjectsSettingsComponent implements OnInit {
       // save to cache
       this.cache = cloneDeep(this.project);
       // breadcrumbs
-      this.breadcrumbsService.updateProject(this.project.name, this.project.title);
+      this.breadcrumbsService.updateProject(this.project.id, this.project.name);
       // relation
       this.relation = RelationHelper.getRelationship(this.project, this.authService.user);
       // loading done

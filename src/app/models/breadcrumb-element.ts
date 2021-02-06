@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright (C) 2020 narra.eu
+ * Copyright (C) 2021 narra.eu
  *
  * This file is part of Narra Editor.
  *
@@ -21,10 +21,7 @@
  * Authors: Michal Mocnak <michal@narra.eu>
  */
 
-import {BreadcrumbElement} from '@app/models';
-
-export interface Breadcrumb {
-  project: BreadcrumbElement;
-  library: BreadcrumbElement;
-  item: BreadcrumbElement;
+export interface BreadcrumbElement {
+  id: string;
+  name: string;
 }

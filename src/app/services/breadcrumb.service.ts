@@ -55,9 +55,9 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
     this._update();
   }
 
-  public updateProject(name: string, title: string): void {
+  public updateProject(id: string, name: string): void {
     // update project
-    this.breadcrumb.project = {name, title};
+    this.breadcrumb.project = {id, name};
     // clean library
     this.breadcrumb.library = undefined;
     // update
@@ -83,7 +83,7 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
   public get project(): string {
     // return project name if project exists
     if (this.breadcrumb.project) {
-      return this.breadcrumb.project.name;
+      return this.breadcrumb.project.id;
     }
     // default
     return undefined;

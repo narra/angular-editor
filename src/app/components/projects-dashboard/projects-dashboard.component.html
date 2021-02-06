@@ -8,15 +8,15 @@
 <div *ngIf="!loading && projects" class="content-container">
   <div class="content-area">
     <div class="clr-row">
-      <div *ngFor="let project of projects" class="clr-col-lg-3 clr-col-12">
-        <a [routerLink]="project.name" class="card clickable"
+      <div *ngFor="let project of projects" class="clr-col-lg-2 clr-col-12">
+        <a [routerLink]="project.id" class="card clickable"
            [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, project, authService.user)">
           <div class="card-img">
             <app-badge [authorship]="project" class="narra-badge"></app-badge>
             <img [src]="project.thumbnails[0]">
           </div>
           <div class="card-block">
-            <h4 class="card-title">{{project.title}}</h4>
+            <h4 class="card-title">{{project.name}}</h4>
             <p class="card-text">{{project.description}}</p>
           </div>
         </a>

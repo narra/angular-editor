@@ -8,7 +8,7 @@
   </div>
 
   <div class="content-area" *ngIf="!loading">
-    <h2>{{project.title}}</h2>
+    <h2>{{project.name}}</h2>
     <h3>Contributors</h3>
     <clr-datagrid [clrDgPreserveSelection]="true" [clrDgRowSelection]="true" [(clrDgSelected)]="project.contributors" (clrDgSelectedChange)="_modelChanged()">
       <clr-dg-placeholder>We couldn't find any other contributors!</clr-dg-placeholder>

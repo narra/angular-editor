@@ -67,10 +67,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.eventsSubscription = this.eventService.register().subscribe((event) => {
       switch (event.type) {
         case EventType.project_created:
-          this.messagesService.success(`Project ${event.content.title} successfuly created.`);
+          this.messagesService.success(`Project ${event.content.name} successfuly created.`);
           break;
         case EventType.project_deleted:
-          this.messagesService.success(`Project ${event.content.title} successfuly deleted.`);
+          this.messagesService.success(`Project ${event.content.name} successfuly deleted.`);
           break;
         case EventType.library_created:
           this.messagesService.success(`Library ${event.content.name} successfuly created.`);

@@ -104,8 +104,8 @@ export class CreateProjectWizardComponent implements OnInit, OnDestroy {
   public emptyProject(): narra.Project {
     // create empty project
     return {
+      id: '',
       name: '',
-      title: '',
       description: '',
       author: this.authService.user,
       scenario: undefined,
@@ -130,9 +130,9 @@ export class CreateProjectWizardComponent implements OnInit, OnDestroy {
     this.loadingFlag = true;
     this.errorFlag = false;
     // convert title for name
-    this.project.name = this.project.title.replace(/ +/gi, '_').toLowerCase();
+    this.project.id = this.project.name.replace(/ +/gi, '_').toLowerCase();
     // validation
-    this.projectService.validate(this.project.name, this.project.title).subscribe(validation => {
+    this.projectService.validate(this.project.id, this.project.name).subscribe(validation => {
       if (validation) {
         this.wizard.forceNext();
       } else {

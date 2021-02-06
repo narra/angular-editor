@@ -25,6 +25,7 @@ export * from './event';
 export * from './navigation';
 export * from './navigation-element';
 export * from './breadcrumb';
+export * from './breadcrumb-element';
 export * from './environment';
 export * from './publisher';
 export * from './user-preferences';
