@@ -120,7 +120,7 @@ export function initializeApp(appInitService: AppInitService) {
   ],
   providers: [
     AppInitService,
-    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppInitService], multi: true},
+    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppInitService, HttpClientModule], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
   ],
