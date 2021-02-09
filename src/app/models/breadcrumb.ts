@@ -23,8 +23,27 @@
 
 import {BreadcrumbElement} from '@app/models';
 
-export interface Breadcrumb {
+export class Breadcrumb {
   project: BreadcrumbElement;
   library: BreadcrumbElement;
   item: BreadcrumbElement;
+
+  constructor(project?: BreadcrumbElement, library?: BreadcrumbElement, item?: BreadcrumbElement) {
+    this.project = project;
+    this.library = library;
+    this.item = item;
+  }
+
+  public static parse(decoded: any): Breadcrumb {
+    return new Breadcrumb(decoded.project, decoded.library, decoded.item);
+  }
+
+  public getQueryParams(element: BreadcrumbElement): any {
+    if (element.pagination) {
+      return {page: element.pagination.page, perPage: element.pagination.perPage, offset: element.pagination.offset};
+    } else {
+      return {};
+    }
+  }
 }
+

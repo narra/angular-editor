@@ -12,7 +12,7 @@
                                                        class="nav-link">{{breadcrumb.project.name}}</a></li>
     <li class="nav-item" *ngIf="breadcrumb.library">></li>
     <li class="nav-item" *ngIf="breadcrumb.library && !breadcrumb.item">{{breadcrumb.library.name}}</li>
-    <li class="nav-item" *ngIf="breadcrumb.library && breadcrumb.item"><a [routerLink]="['/libraries', breadcrumb.library.id]"
+    <li class="nav-item" *ngIf="breadcrumb.library && breadcrumb.item"><a [routerLink]="['/libraries', breadcrumb.library.id]" [queryParams]="breadcrumb.getQueryParams(breadcrumb.library)"
                                                                              class="nav-link">{{breadcrumb.library.name}}</a></li>
     <li class="nav-item" *ngIf="breadcrumb.item">></li>
     <li class="nav-item" *ngIf="breadcrumb.item">{{breadcrumb.item.name}}</li>

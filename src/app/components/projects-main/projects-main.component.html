@@ -28,7 +28,7 @@
     <div class="clr-row" *ngIf="!edit">
       <div *ngFor="let library of project.libraries" class="clr-col-lg-2">
         <ng-container *ngIf="!library.purged; else purged">
-          <span [routerLink]="['/libraries', library.id]" class="card clickable"
+          <span [routerLink]="['/libraries', library.id]" [queryParams]="pagination" class="card clickable"
                 [class.relation-unknown]="RelationHelper.isRelationship(RelationType.unknown, library, authService.user)">
             <div class="card-img">
               <app-badge [authorship]="library" class="narra-badge"></app-badge>

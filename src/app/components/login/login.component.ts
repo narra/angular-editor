@@ -57,11 +57,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // get return url
     const url = this.route.snapshot.queryParamMap.get('url') || '';
+    const params = {};
+    // parse params
+    (this.route.snapshot.queryParamMap.get('params') || '').split('&').filter((param) => param.includes('=')).forEach((param) => {
+      // parse into pair
+      const pair = param.split('=');
+      // add into param
+      params[pair[0]] = pair[1];
+    });
 
     // subscribe for authService events
     this.subscription = this.authService.register().subscribe((event: Event<narra.User>) => {
       if (event.type === EventType.auth_login) {
-        this.router.navigate([url]);
+        this.router.navigate([url], {queryParams: params});
       }
     });
 

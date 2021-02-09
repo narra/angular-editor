@@ -24,12 +24,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Navigation} from '@app/models';
 import {narra} from '@narra/api';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {AuthService, BreadcrumbService, EventService} from '@app/services';
 import {LibrariesNavigation} from '@app/navigation';
 import {EventType, RelationType} from '@app/enums';
 import {RelationHelper} from '@app/helpers';
 import {forkJoin, Observable, Subscription} from 'rxjs';
+import {ClrDatagridStateInterface} from '@clr/angular';
 
 @Component({
   selector: 'app-libraries-main',
@@ -41,8 +42,10 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
   // public
   public navigation: Navigation;
   public loading: boolean;
+  public refreshing: boolean;
   public library: narra.Library;
   public items: narra.Item[];
+  public pagination: narra.Pagination;
   public relation: RelationType;
 
   // private
@@ -54,10 +57,13 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
     private eventService: EventService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private breadcrumbsService: BreadcrumbService
   ) {
     this.loading = true;
+    this.refreshing = true;
     this.relation = RelationType.owned;
+    this.pagination = {page: 1, perPage: 50, offset: 0} as narra.Pagination;
   }
 
   ngOnInit() {
@@ -66,6 +72,21 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
       this.params = params;
       // load navigation
       this.navigation = new LibrariesNavigation(params);
+      // test
+      this.route.queryParamMap.subscribe((queryParams) => {
+        // check for pagination page
+        if (queryParams.get('page')) {
+          this.pagination.page = Number(queryParams.get('page'));
+        }
+        // check for pagination size
+        if (queryParams.get('perPage')) {
+          this.pagination.perPage = Number(queryParams.get('perPage'));
+        }
+        // check for pagination size
+        if (queryParams.get('offset')) {
+          this.pagination.offset = Number(queryParams.get('offset'));
+        }
+      });
       // load
       this._load();
     });
@@ -77,10 +98,8 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
           this._load();
           break;
         case EventType.item_updated:
-          // reload just items
-          this.narraLibraryService.getItems(this.library.id).subscribe((response) => {
-            this.items = response.items;
-          });
+          // refresh items
+          this.refresh();
           break;
       }
     });
@@ -101,13 +120,36 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
       this.breadcrumbsService.updateLibrary(this.library.id, this.library.name);
       // relation
       this.relation = RelationHelper.getRelationship(this.library, this.authService.user);
-      // process
-      forkJoin([this.narraLibraryService.getItems(this.params.get('id'))]).subscribe(results => {
-        // get items
-        this.items = results[0].items;
-        // loading done
-        this.loading = false;
-      });
+      // loading done
+      this.loading = false;
+    });
+  }
+
+  public refresh(state?: ClrDatagridStateInterface) {
+    // start refreshing
+    this.refreshing = true;
+    // update pagination
+    if (state) {
+      // update from state
+      this.pagination.page = state.page.current;
+      this.pagination.perPage = state.page.size;
+      // update breadcrumbs and query
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.route,
+          queryParams: {page: this.pagination.page, perPage: this.pagination.perPage, offset: this.pagination.offset},
+          queryParamsHandling: 'merge'
+        });
+      this.breadcrumbsService.updateLibrary(this.library.id, this.library.name, this.pagination);
+    }
+    // refresh
+    this.narraLibraryService.getItems(this.library.id, undefined, this.pagination).subscribe((response) => {
+      // get items
+      this.items = response.items;
+      this.pagination = response.pagination;
+      // stop refreshing
+      this.refreshing = false;
     });
   }
 }

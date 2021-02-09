@@ -44,6 +44,7 @@ export class ProjectsMainComponent implements OnInit, OnDestroy {
   public project: narra.Project;
   public params: ParamMap;
   public relation: RelationType;
+  public pagination: narra.Pagination;
   public edit: boolean;
   public RelationType = RelationType;
   public RelationHelper = RelationHelper;
@@ -61,6 +62,7 @@ export class ProjectsMainComponent implements OnInit, OnDestroy {
   ) {
     this.loading = true;
     this.relation = RelationType.owned;
+    this.pagination = {page: 1, perPage: 50, offset: 0} as narra.Pagination;
   }
 
   ngOnInit(): void {

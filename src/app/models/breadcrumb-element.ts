@@ -21,7 +21,10 @@
  * Authors: Michal Mocnak <michal@narra.eu>
  */
 
+import {narra} from '@narra/api';
+
 export interface BreadcrumbElement {
   id: string;
   name: string;
+  pagination?: narra.Pagination;
 }

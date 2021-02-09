@@ -25,6 +25,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AuthService} from '@app/services';
+import {isFatalLinkerError} from "@angular/compiler-cli/linker";
 
 @Injectable({
   providedIn: 'root'
@@ -52,10 +53,10 @@ export class AuthGuard implements CanActivate {
       return true;
     } else {
       // parse link and url
-      const link = state.root.queryParamMap.get('link');
       const url = state.url.split('?')[0];
+      const params = state.url.split('?')[1];
       // not logged in so redirect to login page with the return url
-      this.router.navigate(['login'], {queryParams: {url, link}});
+      this.router.navigate(['login'], {queryParams: {url, params}});
       return false;
     }
   }

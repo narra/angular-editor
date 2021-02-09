@@ -22,8 +22,9 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Breadcrumb, Event, Publisher} from '@app/models';
+import {Breadcrumb, BreadcrumbElement, Event, Publisher} from '@app/models';
 import {EventType} from '@app/enums';
+import {narra} from '@narra/api';
 
 @Injectable({
   providedIn: 'root'
@@ -50,23 +51,23 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
   }
 
   public empty(): void {
-    this.breadcrumb = {project: undefined, library: undefined, item: undefined};
+    this.breadcrumb = new Breadcrumb();
     // update
     this._update();
   }
 
   public updateProject(id: string, name: string): void {
     // update project
-    this.breadcrumb.project = {id, name};
+    this.breadcrumb.project = {id, name} as BreadcrumbElement;
     // clean library
     this.breadcrumb.library = undefined;
     // update
     this._update();
   }
 
-  public updateLibrary(id: string, name: string): void {
+  public updateLibrary(id: string, name: string, pagination?: narra.Pagination): void {
     // update project
-    this.breadcrumb.library = {id, name};
+    this.breadcrumb.library = {id, name, pagination} as BreadcrumbElement;
     // clean item
     this.breadcrumb.item = undefined;
     // update
@@ -75,13 +76,13 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
 
   public updateItem(id: string, name: string): void {
     // update project
-    this.breadcrumb.item = {id, name};
+    this.breadcrumb.item = {id, name} as BreadcrumbElement;
     // update
     this._update();
   }
 
   public get project(): string {
-    // return project name if project exists
+    // return project id if project exists
     if (this.breadcrumb.project) {
       return this.breadcrumb.project.id;
     }
@@ -90,7 +91,8 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
   }
 
   public decode(link: string): Breadcrumb {
-    return JSON.parse(decodeURI(this.b64DecodeUnicode(atob(link))));
+    // decode link string
+    return Breadcrumb.parse(JSON.parse(decodeURI(this.b64DecodeUnicode(atob(link)))));
   }
 
   private _update(): void {
