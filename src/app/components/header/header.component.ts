@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // subscribe to events
     this.subscription = this.eventService.register().subscribe((event) => {
       // check event type
-      if ([EventType.item_created, EventType.library_deleted].includes(event.type)) {
+      if ([EventType.item_created, EventType.library_deleted, EventType.library_cleaned].includes(event.type)) {
         // reload if not running
         if (!this.eventsFLag) {
           this._load();
@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
     // initial load
-    //this._load();
+    this._load();
   }
 
   ngOnDestroy() {
@@ -78,23 +78,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // repeat flag initially set to 1
     this.eventsFLag = true;
     // check for events in repeat of 10 seconds
-    timer(1000, 1000).pipe(takeWhile(() => this.eventsFLag)).subscribe(() => {
+    timer(1000, 5000).pipe(takeWhile(() => this.eventsFLag)).subscribe(() => {
       this.narraEventService.getEvents().subscribe((response) => {
-        // resolve done events
-        const done = [this.events, response.events].reduce((a, b) => a.filter(c => !b.includes(c)));
         // update events
         this.events = response.events;
-        // fire events for done tasks
-        done.forEach((event) => {
-          // check event state and type and fire appropriate event
-          if (event.item) {
-            this.eventService.broadcastItemEvent(event.item, EventType.item_updated);
-          } else if (event.library) {
-            this.eventService.broadcastLibraryEvent(event.library, EventType.library_updated);
-          } else if (event.project) {
-            this.eventService.broadcastProjectEvent(event.project, EventType.project_updated);
-          }
-        });
         // disable timer if no events
         if (this.events.length === 0) {
           this.eventsFLag = false;
@@ -104,6 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   public getEventTitle(event: narra.Event): string {
+    // select per existence of any object
     if (event.item) {
       return event.item.name;
     } else if (event.library) {

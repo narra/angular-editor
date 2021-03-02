@@ -66,17 +66,26 @@ export class MessagesComponent implements OnInit, OnDestroy {
     // subscibe to events to automatically send messages
     this.eventsSubscription = this.eventService.register().subscribe((event) => {
       switch (event.type) {
+        case EventType.project_updated:
+          this.messagesService.success(`Project ${event.content.name} successfuly updated.`);
+          break;
         case EventType.project_created:
           this.messagesService.success(`Project ${event.content.name} successfuly created.`);
           break;
         case EventType.project_deleted:
           this.messagesService.success(`Project ${event.content.name} successfuly deleted.`);
           break;
+        case EventType.library_updated:
+          this.messagesService.success(`Library ${event.content.name} successfuly updated.`);
+          break;
         case EventType.library_created:
           this.messagesService.success(`Library ${event.content.name} successfuly created.`);
           break;
         case EventType.library_deleted:
           this.messagesService.success(`Library ${event.content.name} successfuly deleted.`);
+          break;
+        case EventType.library_cleaned:
+          this.messagesService.success(`Library ${event.content.name} successfuly cleaned.`);
           break;
       }
     });

@@ -9,31 +9,58 @@
 
   <div class="content-area" *ngIf="!loading">
     <h2>{{library.name}}</h2>
-    <p class="p1">{{library.description}}</p>
-    <h3>Items</h3>
-    <div style="margin: 10px auto; padding: 10px;">
-      <clr-datagrid (clrDgRefresh)="refresh($event)" [clrDgLoading]="refreshing">
-        <clr-dg-column style="width: 5vw;"></clr-dg-column>
-        <clr-dg-column style="width: 10vw;">Name</clr-dg-column>
-        <clr-dg-column></clr-dg-column>
-        <clr-dg-column style="width: 5vw;"></clr-dg-column>
-
-        <clr-dg-placeholder>We couldn't find any items!</clr-dg-placeholder>
-
-        <clr-dg-row *ngFor="let item of items" [routerLink]="['/items', item.id]" class="hand">
-          <clr-dg-cell style="padding: 0; background-repeat: no-repeat; background-size: cover; background: url({{item.thumbnails[0]}});"></clr-dg-cell>
-          <clr-dg-cell style="padding: 16px;"><span class="p4">{{item.name}}</span></clr-dg-cell>
-          <clr-dg-cell style="padding: 16px;"><span class="p3">{{item.preview}}</span></clr-dg-cell>
-          <clr-dg-cell style="padding: 16px; text-align: center;"><app-badge [pendable]="item" [purgable]="item"></app-badge><span *ngIf="!item.pending && !item.purged" class="label label-info">{{item.type}}</span></clr-dg-cell>
-        </clr-dg-row>
-
-        <clr-dg-footer>
-          <clr-dg-pagination #clrPagination [clrDgPageSize]="pagination.perPage" [clrDgTotalItems]="pagination.total" [clrDgPage]="pagination.page">
-            <clr-dg-page-size [clrPageSizeOptions]="[20,50,100,200]">Items per page</clr-dg-page-size>
-            {{clrPagination.firstItem + 1}} - {{clrPagination.lastItem + 1}} of {{clrPagination.totalItems}} items
-          </clr-dg-pagination>
-        </clr-dg-footer>
-      </clr-datagrid>
+    <p class="p1" *ngIf="library.description">{{library.description}}</p>
+    <div class="clr-row clr-justify-content-between">
+      <div class="clr-col-4">
+        <h3>Items</h3>
+      </div>
+      <div class="clr-col-4" class="text-right" style="margin-top: 10px;" *ngIf="selected.length">
+        <button type="button" class="btn btn-danger-outline btn-sm btn-icon" aria-label="plus" (click)="delete = true">
+          <clr-icon shape="times"></clr-icon>
+          Delete
+        </button>
+      </div>
     </div>
+    <clr-datagrid (clrDgRefresh)="refresh($event)" [clrDgLoading]="refreshing" [clrDgSelected]="selected" (clrDgSelectedChange)="selectionChanged($event)">
+      <clr-dg-column style="width: 5vw;"></clr-dg-column>
+      <clr-dg-column style="width: 10vw;">Name</clr-dg-column>
+      <clr-dg-column></clr-dg-column>
+      <clr-dg-column style="width: 5vw;"></clr-dg-column>
+
+      <clr-dg-placeholder>We couldn't find any items!</clr-dg-placeholder>
+
+      <clr-dg-row *ngFor="let item of items" [clrDgItem]="item">
+        <clr-dg-cell
+          style="padding: 0; background-repeat: no-repeat; background-size: cover; background: url({{item.thumbnails[0]}});"
+          [routerLink]="['/items', item.id]" class="hand"></clr-dg-cell>
+        <clr-dg-cell style="padding: 16px;" [routerLink]="['/items', item.id]" class="hand"><span
+          class="p4">{{item.name}}</span></clr-dg-cell>
+        <clr-dg-cell style="padding: 16px;" [routerLink]="['/items', item.id]" class="hand"><span
+          class="p3">{{item.preview}}</span></clr-dg-cell>
+        <clr-dg-cell style="padding: 16px; text-align: center;" [routerLink]="['/items', item.id]" class="hand">
+          <app-badge [pendable]="item" [purgable]="item"></app-badge>
+          <span *ngIf="!item.pending && !item.purged" class="label label-info">{{item.type}}</span></clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+        <clr-dg-pagination #clrPagination [clrDgPageSize]="pagination.perPage" [clrDgTotalItems]="pagination.total"
+                           [clrDgPage]="pagination.page">
+          <clr-dg-page-size [clrPageSizeOptions]="[20,50,100,200]">Items per page</clr-dg-page-size>
+          {{clrPagination.firstItem + 1}} - {{clrPagination.lastItem + 1}} of {{clrPagination.totalItems}} items
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
   </div>
 </div>
+
+<clr-modal *ngIf="library" [(clrModalOpen)]="delete">
+  <h3 class="modal-title">Delete library</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete selected items? This action is permanent and cannot be
+      recovered.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="delete = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="_deleteItems()">Delete</button>
+  </div>
+</clr-modal>

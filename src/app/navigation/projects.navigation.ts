@@ -43,7 +43,7 @@ export class ProjectsNavigation extends Navigation {
         type: NavigationType.internal,
         segments: ['/projects', params.get('name'), 'contributors'],
         target: undefined,
-        allow: [RelationType.owned, RelationType.contributed]
+        allow: [RelationType.owned]
       },
       {
         title: 'Metadata',

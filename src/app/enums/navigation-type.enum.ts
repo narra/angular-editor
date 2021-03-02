@@ -23,5 +23,5 @@
 
 export enum NavigationType {
   internal,
-  extenral
+  external
 }

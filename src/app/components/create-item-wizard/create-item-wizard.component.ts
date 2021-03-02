@@ -203,13 +203,13 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       const resolvedLibraries = this.proxies.filter((proxy) => 'library' in proxy.options).map( (proxy) => proxy.options['library']);
       // select library or set name
       if (resolvedLibraries.length) {
-        const filtered = this.libraries.filter((library) => library.name === resolvedLibraries[0]);
+        const filtered = this.libraries.filter((library) => library.name === resolvedLibraries[0].name);
         if (filtered.length) {
           this.selectedLibrary = filtered[0].id;
           this.selectionActive = true;
           this.creationActive = false;
         } else {
-          this.newLibrary.name = resolvedLibraries[0];
+          this.newLibrary.name = resolvedLibraries[0].name;
           this.selectionActive = false;
           this.creationActive = true;
         }
@@ -372,7 +372,7 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
     // chunk proxies
     const chunks = ArrayHelper.chunk(this.proxies.filter((proxy) => proxy.selected).map((proxy) => {
       return {library, proxy};
-    }), 50);
+    }), 200);
     // update progress max
     this.addingMax = chunks.length;
     // execute actions
@@ -389,8 +389,8 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       });
     });
     forkJoin(observerables).subscribe((results) => {
-      // broadcast events
-      this.eventService.broadcastEvents([EventType.item_created, EventType.library_updated]);
+      // broadcast event
+      this.eventService.broadcastEvent(EventType.item_created);
       // close wizard
       this.wizard.finish();
     });

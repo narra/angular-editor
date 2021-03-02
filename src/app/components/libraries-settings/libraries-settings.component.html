@@ -32,6 +32,8 @@
         <label class="clr-control-label">Actions</label>
         <button type="button" class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateLibrary()">Update Library
         </button>
+        <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="clean = true">Clean Library
+        </button>
         <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">
           Delete Library
         </button>
@@ -49,5 +51,17 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="delete = false">Cancel</button>
     <button type="button" class="btn btn-danger" (click)="_deleteLibrary()">Delete</button>
+  </div>
+</clr-modal>
+
+<clr-modal *ngIf="library" [(clrModalOpen)]="clean">
+  <h3 class="modal-title">Clean library</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to clean <strong>{{library.name}}</strong>? This action is permanent and cannot be
+      recovered.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="clean = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="_cleanLibrary()">Clean</button>
   </div>
 </clr-modal>

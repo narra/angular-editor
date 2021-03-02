@@ -45,6 +45,7 @@ export class LibrariesSettingsComponent implements OnInit {
   public library: narra.Library;
   public scenarios: narra.Scenario[];
   public changed: boolean;
+  public clean: boolean;
   public delete: boolean;
   public relation: RelationType;
   public RelationType = RelationType;
@@ -64,6 +65,7 @@ export class LibrariesSettingsComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService
   ) {
     this.loading = true;
+    this.clean = false;
     this.delete = false;
     this.relation = RelationType.owned;
   }
@@ -102,21 +104,37 @@ export class LibrariesSettingsComponent implements OnInit {
     });
   }
 
-  public _modelChanged() {
+  public _modelChanged(): void {
     this.changed = !(this.library.scenario.id === this.cache.scenario.id) || !(this.library.shared === this.cache.shared);
   }
 
-  public _updateLibrary() {
+  public _cleanLibrary() {
     // set loading flag
     this.loading = true;
-    // update project
-    this.libraryService.updateLibrary(this.library).subscribe((response) => {
+    // close dialog
+    this.clean = false;
+    // clean library items
+    this.libraryService.cleanLibrary(this.library.id).subscribe((response) => {
+      // broadcast event
+      this.eventService.broadcastLibraryEvent(this.library, EventType.library_cleaned);
       // reload data
       this._load();
     });
   }
 
-  public _deleteLibrary() {
+  public _updateLibrary(): void {
+    // set loading flag
+    this.loading = true;
+    // update project
+    this.libraryService.updateLibrary(this.library).subscribe((response) => {
+      // broadcast event
+      this.eventService.broadcastLibraryEvent(this.library, EventType.library_updated);
+      // reload data
+      this._load();
+    });
+  }
+
+  public _deleteLibrary(): void {
     // set loading flag
     this.loading = true;
     // close dialog

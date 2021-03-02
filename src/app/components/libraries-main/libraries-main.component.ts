@@ -29,8 +29,9 @@ import {AuthService, BreadcrumbService, EventService} from '@app/services';
 import {LibrariesNavigation} from '@app/navigation';
 import {EventType, RelationType} from '@app/enums';
 import {RelationHelper} from '@app/helpers';
-import {forkJoin, Observable, Subscription} from 'rxjs';
+import {forkJoin, Observable, Subscription, timer} from 'rxjs';
 import {ClrDatagridStateInterface} from '@clr/angular';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'app-libraries-main',
@@ -43,8 +44,10 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
   public navigation: Navigation;
   public loading: boolean;
   public refreshing: boolean;
+  public delete: boolean;
   public library: narra.Library;
   public items: narra.Item[];
+  public selected: narra.Item[];
   public pagination: narra.Pagination;
   public relation: RelationType;
 
@@ -62,7 +65,9 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
   ) {
     this.loading = true;
     this.refreshing = true;
+    this.delete = false;
     this.relation = RelationType.owned;
+    this.selected = [];
     this.pagination = {page: 1, perPage: 50, offset: 0} as narra.Pagination;
   }
 
@@ -125,6 +130,22 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
     });
   }
 
+  public _deleteItems(): void {
+    // start refreshing
+    this.refreshing = true;
+    // close dialog
+    this.delete = false;
+    // clean library items
+    this.narraLibraryService.deleteItems(this.library.id, this.selected.map((item) => item.id)).subscribe((response) => {
+      // clean selected
+      this.selected = [];
+      // just reload
+      timer(1042).subscribe(() => {
+        this.refresh();
+      });
+    });
+  }
+
   public refresh(state?: ClrDatagridStateInterface) {
     // start refreshing
     this.refreshing = true;
@@ -151,5 +172,10 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
       // stop refreshing
       this.refreshing = false;
     });
+  }
+
+  public selectionChanged(event) {
+    // assign selected items into array
+    this.selected = event;
   }
 }

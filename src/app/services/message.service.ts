@@ -29,7 +29,7 @@ import {Event, Publisher} from '@app/models';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService extends Publisher<Message>{
+export class MessageService extends Publisher<Message> {
 
   constructor() {
     // initialize publisher

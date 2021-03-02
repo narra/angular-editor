@@ -92,7 +92,7 @@ export class AdminNavigationService extends Navigation {
       },
       {
         title: 'Workers',
-        type: NavigationType.extenral,
+        type: NavigationType.external,
         segments: [this._getWorkersSegment()],
         target: TargetType.blank,
         allow: []

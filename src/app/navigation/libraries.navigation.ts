@@ -43,7 +43,7 @@ export class LibrariesNavigation extends Navigation {
         type: NavigationType.internal,
         segments: ['/libraries', params.get('id'), 'contributors'],
         target: undefined,
-        allow: [RelationType.owned, RelationType.contributed]
+        allow: [RelationType.owned]
       },
       {
         title: 'Metadata',
