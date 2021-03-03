@@ -22,7 +22,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {Navigation} from '@app/models';
+import {Navigation, NavigationElement} from '@app/models';
 import {NavigationType, RelationType} from '@app/enums';
 import {AuthService, BreadcrumbService, UserPreferencesService} from '@app/services';
 import {UserHelper} from '@app/helpers';
@@ -45,6 +45,10 @@ export class NavigationComponent implements OnInit {
     private authService: AuthService,
     private userPreferencesService: UserPreferencesService
   ) {
+  }
+
+  public isRelated(element: NavigationElement): boolean {
+    return element.allow.includes(this.relation);
   }
 
   ngOnInit() {
