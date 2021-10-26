@@ -1,37 +1,20 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Navigation} from '@app/models';
 import {narra} from '@narra/api';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {AuthService, BreadcrumbService, EventService} from '@app/services';
+import {AuthService, BreadcrumbService, EventService, MessageService} from '@app/services';
 import {LibrariesNavigation} from '@app/navigation';
 import {EventType, RelationType} from '@app/enums';
 import {RelationHelper} from '@app/helpers';
-import {forkJoin, Observable, Subscription, timer} from 'rxjs';
+import {forkJoin, Subscription, timer} from 'rxjs';
 import {ClrDatagridStateInterface} from '@clr/angular';
-import {takeWhile} from 'rxjs/operators';
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'app-libraries-main',
@@ -47,6 +30,8 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
   public delete: boolean;
   public library: narra.Library;
   public items: narra.Item[];
+  public actions: narra.Action[];
+  public filteredActions: narra.Action[];
   public selected: narra.Item[];
   public pagination: narra.Pagination;
   public relation: RelationType;
@@ -57,11 +42,15 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
 
   constructor(
     private narraLibraryService: narra.LibraryService,
+    private narraActionService: narra.ActionService,
+    private narraEventService: narra.EventService,
+    private narraReturnService: narra.ReturnService,
     private eventService: EventService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private breadcrumbsService: BreadcrumbService
+    private breadcrumbsService: BreadcrumbService,
+    private messageService: MessageService
   ) {
     this.loading = true;
     this.refreshing = true;
@@ -118,9 +107,11 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
     // set loading flag
     this.loading = true;
     // observerables
-    this.narraLibraryService.getLibrary(this.params.get('id')).subscribe((response) => {
+    forkJoin([this.narraLibraryService.getLibrary(this.params.get('id')), this.narraActionService.getActions()]).subscribe((responses) => {
+      // get actions
+      this.actions = responses[1].actions;
       // get library
-      this.library = response.library;
+      this.library = responses[0].library;
       // breadcrumbs;
       this.breadcrumbsService.updateLibrary(this.library.id, this.library.name);
       // relation
@@ -174,8 +165,82 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
     });
   }
 
-  public selectionChanged(event) {
+  public performAction(action): void {
+    // perform action
+    this.narraActionService.performAction(this.selected.map((item) => item.id), action).subscribe((response) => {
+      // fire event
+      this.eventService.broadcastEvent(EventType.action_performed);
+      // get returns
+      const returns = response.action.returns;
+      // process them
+      if (returns.length) {
+        this._processReturns(returns, []);
+      }
+      // send message
+      this.messageService.success('Action successfully executed');
+    });
+  }
+
+  private _processReturns(returns: narra.Return[], files: string[]): void {
+    // prepare objects
+    const joins = [];
+    // iterate over returns
+    returns.forEach((r) => {
+      // push into joins
+      joins.push(this.narraReturnService.getReturn(r.id));
+    });
+    // check for the rest once requests done
+    forkJoin<narra.Response<narra.Return, 'return'>>(joins).subscribe((responses) => {
+      // process responses
+      responses.forEach((responseee) => {
+        const id = responseee.return.id;
+        const url = responseee.return.url;
+        // process those with url
+        if (url != null) {
+          // remove from returns
+          returns = returns.filter((r) => r.id !== id);
+          // and into files
+          files.push(url);
+        }
+      });
+      // process when finished
+      if (!returns.length) {
+        // set wait flag to done and download files
+        files.forEach((file) => {
+          const parts = file.split('/');
+          const filename = parts[parts.length - 1];
+          saveAs(file, filename);
+        });
+        // send message
+        this.messageService.success('Files successfully downloaded');
+      } else {
+        // continue
+        setTimeout(() => {
+          this._processReturns(returns, files);
+        }, 1000);
+      }
+    });
+  }
+
+  public selectionChanged(items: narra.Item[]): void {
+    // filter actions
+    if (items.length) {
+      // select uniq array of connectors
+      const selection = Array.from(new Set(items.map((item) => item.connector)));
+      // filter actions
+      this.filteredActions = this.actions.filter((action) => {
+        return [action.dependency, selection].reduce((a, b) => a.filter(c => b.includes(c))).length;
+      });
+    } else {
+      this.filteredActions = [];
+    }
     // assign selected items into array
-    this.selected = event;
+    this.selected = items;
+  }
+
+  public getActions(): narra.Action[] {
+    console.log('ted');
+    // console.log();
+    return this.actions;
   }
 }

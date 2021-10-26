@@ -1,3 +1,5 @@
-![narra logo](https://github.com/narra/platform/raw/master/narra.png)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# Editor
+![narra logo](https://github.com/narra/platform/raw/main/narra.png)
+
+# Narra::Editor

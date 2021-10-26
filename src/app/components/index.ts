@@ -25,6 +25,8 @@ export * from './add-library-wizard/add-library-wizard.component';
 export * from './create-item-wizard/create-item-wizard.component';
 export * from './create-library-wizard/create-library-wizard.component';
 export * from './create-project-wizard/create-project-wizard.component';
+export * from './admin-actions/admin-actions.component';
+export * from './admin-log/admin-log.component';
 export * from './admin-connectors/admin-connectors.component';
 export * from './admin-generators/admin-generators.component';
 export * from './admin-settings/admin-settings.component';

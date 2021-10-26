@@ -1,36 +1,18 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ClrWizard} from '@clr/angular';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
-import {AddService, AuthService, EventService, MessageService} from '@app/services';
+import {AddService, AuthService, BreadcrumbService, EventService, MessageService} from '@app/services';
 import {EventType} from '@app/enums';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import flattenDeep from 'lodash/flattenDeep';
 import {FormGroup} from '@angular/forms';
-import {ArrayHelper, ErrorHelper, RouterHelper, ScenarioHelper} from '@app/helpers';
-import {Router} from '@angular/router';
+import {ArrayHelper, ErrorHelper, ScenarioHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 
 @Component({
@@ -54,7 +36,6 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
   public loadingFlag: boolean;
   public readyFlag: boolean;
   public errorFlag: boolean;
-  public validationFlag: boolean;
   public selectionActive: boolean;
   public creationActive: boolean;
   public selectedLibrary: string;
@@ -75,14 +56,14 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
     private projectService: narra.ProjectService,
     private eventService: EventService,
     private messageService: MessageService,
-    private router: Router) {
+    private breadcrumbService: BreadcrumbService
+  ) {
     super(messageService);
     this.open = false;
     this.loadingFlag = true;
     this.addingFlag = false;
     this.readyFlag = false;
     this.errorFlag = false;
-    this.validationFlag = false;
     this.selectionActive = true;
     this.creationActive = false;
     this.newLibrary = this.emptyLibrary();
@@ -93,16 +74,12 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       if (event.type === EventType.create_item) {
         // clear
         this._clear();
-        // get router segments
-        const segments = RouterHelper.resolveCurrentRouteSegments(this.router);
         // open dialog
         this.open = true;
         // check the scope
-        if (segments.length && segments[0] === 'libraries' && segments[1]) {
+        if (this.breadcrumbService.library) {
           // get current library
-          this.libraryService.getLibrary(segments[1]).subscribe((response) => {
-            this.selectedLibrary = response.library.id;
-          });
+          this.selectedLibrary = this.breadcrumbService.library;
         }
         // load scenarios
         this.scenarioService.getScenarios().subscribe((response) => {
@@ -113,9 +90,9 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
             this.newLibrary.scenario = this.scenarios[0];
           }
           // check the scope
-          if (segments.length && segments[0] === 'projects' && segments[1]) {
+          if (this.breadcrumbService.project) {
             // get current project
-            this.projectService.getProject(segments[1]).subscribe((responsee) => {
+            this.projectService.getProject(this.breadcrumbService.project).subscribe((responsee) => {
               this.project = responsee.project;
               // loading done
               this.loadingFlag = false;
@@ -161,7 +138,8 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       contributors: [],
       scenario: undefined,
       thumbnails: [],
-      metadata: []
+      metadata: [],
+      updated_at: undefined
     };
     // return
     return empty;
@@ -188,6 +166,20 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
     });
   }
 
+  public isPrepared(): boolean {
+    // try to resolve only when the wizard is opened
+    if (this.open) {
+      // check for creation
+      if (this.creationActive) {
+        return Boolean(this.newLibrary.name);
+      } else {
+        return Boolean(this.selectedLibrary);
+      }
+    }
+    // false by default
+    return false;
+  }
+
   public prepareOptions(): void {
     // loading on
     this.loadingFlag = true;
@@ -203,6 +195,7 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       const resolvedLibraries = this.proxies.filter((proxy) => 'library' in proxy.options).map( (proxy) => proxy.options['library']);
       // select library or set name
       if (resolvedLibraries.length) {
+        // resolved libraries is prioritized
         const filtered = this.libraries.filter((library) => library.name === resolvedLibraries[0].name);
         if (filtered.length) {
           this.selectedLibrary = filtered[0].id;
@@ -372,7 +365,7 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
     // chunk proxies
     const chunks = ArrayHelper.chunk(this.proxies.filter((proxy) => proxy.selected).map((proxy) => {
       return {library, proxy};
-    }), 200);
+    }), 50);
     // update progress max
     this.addingMax = chunks.length;
     // execute actions
@@ -386,13 +379,14 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
         this.addingProgress += 1;
         // check for errors
         this.handleError(response.errors);
+        // check if this is the last one
+        if (this.addingProgress === this.addingMax) {
+          // broadcast event
+          this.eventService.broadcastEvent(EventType.item_created);
+          // close wizard
+          this.wizard.finish();
+        }
       });
-    });
-    forkJoin(observerables).subscribe((results) => {
-      // broadcast event
-      this.eventService.broadcastEvent(EventType.item_created);
-      // close wizard
-      this.wizard.finish();
     });
   }
 }

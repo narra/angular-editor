@@ -1,3 +1,9 @@
+<!--
+* Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+* Copyright: (c) 2021, Narra Project
+* GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+-->
+
 <clr-wizard #wizard [(clrWizardOpen)]="open" clrWizardSize="lg">
   <clr-wizard-title>Create Library</clr-wizard-title>
 
@@ -69,10 +75,10 @@
       <clr-datagrid [clrDgRowSelection]="true" [(clrDgSelected)]="library.contributors">
         <clr-dg-placeholder>We couldn't find any other contributors!</clr-dg-placeholder>
         <clr-dg-column>Name</clr-dg-column>
-        <clr-dg-column>Username</clr-dg-column>
+        <clr-dg-column>Email</clr-dg-column>
         <clr-dg-row *ngFor="let user of users" [clrDgItem]="user">
           <clr-dg-cell>{{user.name}}</clr-dg-cell>
-          <clr-dg-cell>{{user.username}}</clr-dg-cell>
+          <clr-dg-cell>{{user.email}}</clr-dg-cell>
         </clr-dg-row>
       </clr-datagrid>
     </form>

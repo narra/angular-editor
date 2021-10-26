@@ -1,3 +1,9 @@
+<!--
+* Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+* Copyright: (c) 2021, Narra Project
+* GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+-->
+
 <clr-wizard #wizard [(clrWizardOpen)]="open" clrWizardSize="lg">
   <clr-wizard-title>Import Item</clr-wizard-title>
 
@@ -100,7 +106,7 @@
 
   <clr-wizard-page (clrWizardPageOnCancel)="doCancel()" (clrWizardPageOnCommit)="onFinish()"
                    (clrWizardPagePrevious)="doPrevious()" clrWizardPagePreventDefault="true"
-                   [clrWizardPageNextDisabled]="this.validationFlag">
+                   [clrWizardPageNextDisabled]="!isPrepared()">
     <ng-template clrPageTitle>Library</ng-template>
 
     <clr-spinner *ngIf="loadingFlag">

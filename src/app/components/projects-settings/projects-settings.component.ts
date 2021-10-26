@@ -1,24 +1,7 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Component, OnInit} from '@angular/core';
@@ -26,7 +9,7 @@ import {Navigation} from '@app/models';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {ProjectsNavigation} from '@app/navigation';
 import {forkJoin} from 'rxjs';
-import {ArrayHelper, RelationHelper, ScenarioHelper, UserHelper} from '@app/helpers';
+import {RelationHelper, ScenarioHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 import {AuthService, BreadcrumbService, EventService} from '@app/services';
 import {EventType, RelationType} from '@app/enums';
@@ -122,9 +105,9 @@ export class ProjectsSettingsComponent implements OnInit {
     // close dialog
     this.delete = false;
     // delete project
-    this.projectService.deleteProject(this.project.name).subscribe((response) => {
+    this.projectService.deleteProject(this.project.id).subscribe((response) => {
       // redirect to dashboard
-      if (response.name === this.project.name) {
+      if (response.id === this.project.id) {
         // broadcast event
         this.eventService.broadcastProjectEvent(this.project, EventType.project_deleted);
         // redirect

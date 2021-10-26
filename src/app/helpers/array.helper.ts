@@ -1,24 +1,7 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {narra} from '@narra/api';
@@ -39,6 +22,13 @@ export class ArrayHelper {
     });
   }
 
+  static sort(key: string, array: any[]): any[] {
+    const sortBy = (key) => {
+      return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
+    };
+    return array.concat().sort(sortBy(key));
+  }
+
   static chunk(array: any[], size: number) {
     return array.reduce((arr, item, idx) => {
       return idx % size === 0
@@ -56,15 +46,15 @@ export class ArrayHelper {
       if ('shared' in object && (object as unknown as narra.Library).shared) {
         inclusionFlag = true;
       } else if (include.map(author => {
-        return author.username;
-      }).includes(object.author.username)) {
+        return author.email;
+      }).includes(object.author.email)) {
         inclusionFlag = true;
       } else {
         // process contributors
         include.forEach(inclusion => {
           if (object.contributors.map(author => {
-            return author.username;
-          }).includes(inclusion.username)) {
+            return author.email;
+          }).includes(inclusion.email)) {
             inclusionFlag = true;
           }
         });

@@ -27,6 +27,8 @@ import {AuthGuard} from '@app/guards/auth.guard';
 import {narra} from '@narra/api';
 import {
   AdminConnectorsComponent,
+  AdminActionsComponent,
+  AdminLogComponent,
   AdminGeneratorsComponent,
   AdminSettingsComponent,
   AdminSynthesizersComponent,
@@ -68,6 +70,8 @@ const routes: Routes = [
   {path: 'scenarios', component: ScenariosDashboardComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.author]}},
   {path: 'admin', redirectTo: '/admin/system', pathMatch: 'full'},
   {path: 'admin/system', component: AdminSystemComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},
+  {path: 'admin/logs', component: AdminLogComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},
+  {path: 'admin/actions', component: AdminActionsComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},
   {path: 'admin/connectors', component: AdminConnectorsComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},
   {path: 'admin/generators', component: AdminGeneratorsComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},
   {path: 'admin/synthesizers', component: AdminSynthesizersComponent, canActivate: [AuthGuard], data: {roles: [narra.RoleType.admin]}},

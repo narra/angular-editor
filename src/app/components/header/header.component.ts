@@ -1,28 +1,11 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AddService, AuthService, EventService, UserPreferencesService} from '@app/services';
+import {AddService, AuthService, DispatcherService, EventService, UserPreferencesService} from '@app/services';
 import {UserHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 import {Subscription, timer} from 'rxjs';
@@ -37,17 +20,17 @@ import {takeWhile} from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   // public
-  public events: narra.Event[];
   public UserHelper = UserHelper;
   public narraEventStatus = narra.EventStatus;
+  public events: narra.Event[];
 
   // private
-  private subscription: Subscription;
-  private eventsFLag = false;
+  private subscriptionDispatcher: Subscription;
 
   constructor(
     public authService: AuthService,
     public addService: AddService,
+    public dispatcherService: DispatcherService,
     public narraEventService: narra.EventService,
     public eventService: EventService,
     public userPreferencesService: UserPreferencesService
@@ -56,38 +39,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // subscribe to events
-    this.subscription = this.eventService.register().subscribe((event) => {
-      // check event type
-      if ([EventType.item_created, EventType.library_deleted, EventType.library_cleaned].includes(event.type)) {
-        // reload if not running
-        if (!this.eventsFLag) {
-          this._load();
-        }
-      }
+    this.subscriptionDispatcher = this.dispatcherService.register().subscribe((event) => {
+      // update events
+      this.events = event.content;
     });
-    // initial load
-    this._load();
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  private _load(): void {
-    // repeat flag initially set to 1
-    this.eventsFLag = true;
-    // check for events in repeat of 10 seconds
-    timer(1000, 5000).pipe(takeWhile(() => this.eventsFLag)).subscribe(() => {
-      this.narraEventService.getEvents().subscribe((response) => {
-        // update events
-        this.events = response.events;
-        // disable timer if no events
-        if (this.events.length === 0) {
-          this.eventsFLag = false;
-        }
-      });
-    });
+    this.subscriptionDispatcher.unsubscribe();
   }
 
   public getEventTitle(event: narra.Event): string {
@@ -99,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else if (event.project) {
       return event.project.name;
     } else {
-      return 'Undefined';
+      return event.message;
     }
   }
 }

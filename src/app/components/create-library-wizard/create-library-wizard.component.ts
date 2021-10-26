@@ -1,34 +1,16 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ClrWizard} from '@clr/angular';
 import {Subscription} from 'rxjs';
-import {AddService, AuthService, EventService} from '@app/services';
+import {AddService, AuthService, BreadcrumbService, EventService} from '@app/services';
 import {EventType} from '@app/enums';
 import {FormGroup} from '@angular/forms';
-import {RouterHelper, ScenarioHelper, UserHelper} from '@app/helpers';
-import {Router} from '@angular/router';
+import {ScenarioHelper, UserHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 
 @Component({
@@ -61,7 +43,7 @@ export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
     private scenarioService: narra.ScenarioService,
     private libraryService: narra.LibraryService,
     private projectService: narra.ProjectService,
-    private router: Router
+    private breadcrumbService: BreadcrumbService,
   ) {
     this.open = false;
     this.library = this.emptyLibrary();
@@ -76,8 +58,6 @@ export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
         this.library = this.emptyLibrary();
         // reset project
         this.project = undefined;
-        // get router segments
-        const segments = RouterHelper.resolveCurrentRouteSegments(this.router);
         // reset forms
         this.formBasic.reset();
         this.formContributors.reset();
@@ -98,9 +78,9 @@ export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
               this.library.scenario = this.scenarios[0];
             }
             // check the scope
-            if (segments.length && segments[0] === 'projects' && segments[1]) {
+            if (this.breadcrumbService.project) {
               // get current project
-              this.projectService.getProject(segments[1]).subscribe((responseee) => {
+              this.projectService.getProject(this.breadcrumbService.project).subscribe((responseee) => {
                 this.project = responseee.project;
                 // loading done
                 this.loadingFlag = false;
@@ -131,7 +111,8 @@ export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
       contributors: [],
       scenario: undefined,
       thumbnails: [],
-      metadata: []
+      metadata: [],
+      updated_at: undefined
     };
     // return
     return empty;

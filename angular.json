@@ -35,10 +35,12 @@
             "scripts": [
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
               "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
-              "node_modules/@clr/icons/clr-icons.min.js"
+              "node_modules/@clr/icons/clr-icons.min.js",
+              "node_modules/file-saver/dist/FileSaver.js"
             ],
             "allowedCommonJsDependencies": [
-              "lodash"
+              "lodash",
+              "file-saver"
             ],
             "preserveSymlinks": true
           },

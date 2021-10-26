@@ -1,3 +1,9 @@
+<!--
+* Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+* Copyright: (c) 2021, Narra Project
+* GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+-->
+
 <div class="content-container">
   <nav class="sidenav">
     <app-navigation [provider]="navigation" [relation]="relation"></app-navigation>
@@ -13,10 +19,10 @@
     <clr-datagrid [clrDgPreserveSelection]="true" [clrDgRowSelection]="true" [(clrDgSelected)]="project.contributors" (clrDgSelectedChange)="_modelChanged()">
       <clr-dg-placeholder>We couldn't find any other contributors!</clr-dg-placeholder>
       <clr-dg-column>Name</clr-dg-column>
-      <clr-dg-column>Username</clr-dg-column>
+      <clr-dg-column>Email</clr-dg-column>
       <clr-dg-row *clrDgItems="let user of users" [clrDgItem]="user">
         <clr-dg-cell>{{user.name}}</clr-dg-cell>
-        <clr-dg-cell>{{user.username}}</clr-dg-cell>
+        <clr-dg-cell>{{user.email}}</clr-dg-cell>
       </clr-dg-row>
     </clr-datagrid>
     <div style="margin-top: 30px;" *ngIf="changed">

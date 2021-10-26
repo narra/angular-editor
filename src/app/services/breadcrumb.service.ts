@@ -1,24 +1,7 @@
 /**
- * @license
- *
- * Copyright (C) 2020 narra.eu
- *
- * This file is part of Narra Editor.
- *
- * Narra Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Narra Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Narra Angular API. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Michal Mocnak <michal@narra.eu>
+ * Copyright: (c) 2021, Michal Mocnak <michal@narra.eu>, Eric Rosenzveig <eric@narra.eu>
+ * Copyright: (c) 2021, Narra Project
+ * GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 import {Injectable} from '@angular/core';
@@ -85,6 +68,15 @@ export class BreadcrumbService extends Publisher<Breadcrumb> {
     // return project id if project exists
     if (this.breadcrumb.project) {
       return this.breadcrumb.project.id;
+    }
+    // default
+    return undefined;
+  }
+
+  public get library(): string {
+    // return library id if library exists
+    if (this.breadcrumb.library) {
+      return this.breadcrumb.library.id;
     }
     // default
     return undefined;
