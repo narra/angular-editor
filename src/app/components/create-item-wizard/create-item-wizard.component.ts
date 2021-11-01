@@ -258,6 +258,12 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
               this.files[index].ingest = event.body.ingest;
             } else {
               this.files[index].error = true;
+              // check for errors messages
+              if (event.body.errors) {
+                event.body.errors.forEach((error) => {
+                  this.messageService.error(error.message, error.trace);
+                });
+              }
             }
             // clean uploading flag
             this.files[index].uploading = false;
@@ -316,6 +322,14 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
     })).subscribe((responses) => {
       // fill candidates
       this.proxies = flattenDeep(responses.map((response) => response.proxies));
+      // fill errors buffer
+      const errors = flattenDeep(responses.map((response) => response.errors));
+      // fire messages if any errors
+      if (errors.length) {
+        errors.forEach((error) => {
+          this.messageService.error(error.message, error.trace);
+        });
+      }
       // select all proxies
       this.selectProxies(true);
       // move next

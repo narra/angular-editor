@@ -72,14 +72,14 @@
       Loading
     </clr-spinner>
 
-    <div class="clr-row clr-align-items-center" style="height: 40vh;" *ngIf="!this.proxies">
+    <div class="clr-row clr-align-items-center" style="height: 40vh;" *ngIf="!this.proxies.length">
       <div class="clr-col-12 text-center">
         <clr-icon shape="info-circle" size="72"></clr-icon>
         <div>We couldn't resolve any items.</div>
       </div>
     </div>
 
-    <div class="clr-row" style="padding-left: 10px; padding-bottom: 15px; padding-right: 0px;" *ngIf="proxies.length">
+    <div class="clr-row" style="padding-left: 10px; padding-bottom: 15px; padding-right: 0px;" *ngIf="this.proxies.length">
       <div class="clr-col-4"><strong>{{proxies.length}}</strong> items resolved.</div>
       <div class="clr-col text-right" style="padding: 0px;">
         <span class="btn btn-sm" (click)="selectProxies(true)">Select All</span>
