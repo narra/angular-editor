@@ -85,8 +85,8 @@ export class LibrariesContributorsComponent implements OnInit {
 
   public _modelChanged() {
     this.changed = !ArrayHelper.isEqual(
-      ArrayHelper.pluck(this.library.contributors, 'email'),
-      ArrayHelper.pluck(this.cache.contributors, 'email')
+      ArrayHelper.pluck(this.library.contributors, 'id'),
+      ArrayHelper.pluck(this.cache.contributors, 'id')
     );
   }
 

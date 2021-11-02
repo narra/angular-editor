@@ -56,7 +56,7 @@ export class AdminUsersComponent implements OnInit {
     // close dialog
     this.delete = false;
     // delete project
-    this.userService.deleteUser(user.email).subscribe((response) => {
+    this.userService.deleteUser(user.id).subscribe((response) => {
       // refresh
       this._load();
     });
