@@ -24,7 +24,7 @@
     "@clr/angular": "~5.0.2",
     "@clr/icons": "~5.0.2",
     "@clr/ui": "~5.0.2",
-    "@narra/api": "~0.4.4",
+    "@narra/api": "~0.4.5",
     "@webcomponents/custom-elements": "~1.4.3",
     "@webcomponents/webcomponentsjs": "~2.5.0",
     "core-js": "~3.7.0",

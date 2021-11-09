@@ -34,11 +34,23 @@
         </clr-toggle-wrapper>
         <clr-control-helper>Wheter the project will be visible for the public</clr-control-helper>
       </clr-toggle-container>
-      <div class="clr-form-control clr-row" *ngIf="changed || relation === RelationType.owned">
+      <div class="clr-form-control clr-row"
+           *ngIf="changed || relation === RelationType.owned || relation === RelationType.contributed">
         <label class="clr-control-label">Actions</label>
-        <button type="button" class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateProject()">Update Project
+        <div appDrop class="container">
+          <input #fileDropRef (change)="fileBrowseHandler($event.target.files)" id="fileDropRef" type="file"/>
+          <label class="btn btn-sm btn-success-outline" for="fileDropRef">Import Metadata</label>
+        </div>
+        <button type="button" class="btn btn-sm btn-success-outline"
+                *ngIf="relation === RelationType.owned || relation === RelationType.contributed"
+                (click)="_exportProject()">Export Metadata
         </button>
-        <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="delete = true">Delete Project</button>
+        <button type="button" class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateProject()">Update
+          Project
+        </button>
+        <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned"
+                (click)="delete = true">Delete Project
+        </button>
       </div>
     </form>
   </div>

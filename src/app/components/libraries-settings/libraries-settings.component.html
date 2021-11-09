@@ -36,6 +36,14 @@
       </clr-toggle-container>
       <div class="clr-form-control clr-row" *ngIf="changed || relation === RelationType.owned">
         <label class="clr-control-label">Actions</label>
+        <div appDrop class="container">
+          <input #fileDropRef (change)="fileBrowseHandler($event.target.files)" id="fileDropRef" type="file"/>
+          <label class="btn btn-sm btn-success-outline" for="fileDropRef">Import Metadata</label>
+        </div>
+        <button type="button" class="btn btn-sm btn-success-outline"
+                *ngIf="relation === RelationType.owned || relation === RelationType.contributed"
+                (click)="_exportLibrary()">Export Metadata
+        </button>
         <button type="button" class="btn btn-sm btn-success-outline" *ngIf="changed" (click)="_updateLibrary()">Update Library
         </button>
         <button type="button" class="btn btn-sm btn-danger-outline" *ngIf="relation === RelationType.owned" (click)="clean = true">Clean Library
