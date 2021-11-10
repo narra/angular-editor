@@ -19,11 +19,23 @@
       <div class="clr-col-4">
         <h3>Metadata</h3>
       </div>
-      <div class="clr-col-4" class="text-right" style="margin-top: 15px;">
+      <div class="clr-col text-right" style="margin-top: 15px;">
         <button type="button" class="btn btn-sm btn-icon" aria-label="plus" (click)="openAddDialog = true">
           <clr-icon shape="plus"></clr-icon>
           Add
         </button>
+        <button type="button" class="btn btn-sm btn-success-outline"
+                *ngIf="this.projects.length && (relation === RelationType.owned || relation === RelationType.contributed)"
+                (click)="openCopyDialog = true">Copy
+        </button>
+        <button type="button" class="btn btn-sm btn-success-outline"
+                *ngIf="relation === RelationType.owned || relation === RelationType.contributed"
+                (click)="_exportMeta()">Export
+        </button>
+        <div appDrop class="container">
+          <input #fileDropRef (change)="fileBrowseHandler($event.target.files)" id="fileDropRef" type="file"/>
+          <label class="btn btn-sm btn-success-outline" for="fileDropRef">Import</label>
+        </div>
       </div>
     </div>
     <clr-datagrid>
@@ -79,5 +91,24 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="openAddDialog = false">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="_addMeta()" [disabled]="!formAdd.valid">Add</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="openCopyDialog">
+  <h3 class="modal-title">Copy Metadata</h3>
+  <div class="modal-body">
+    <form clrForm #formCopy="ngForm">
+      <clr-select-container>
+        <label>Destination</label>
+        <select clrSelect name="destination" [(ngModel)]="destination" required>
+          <option *ngFor="let proj of projects" [ngValue]="proj">{{proj.name}}</option>
+        </select>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-select-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="openCopyDialog = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="_copyMeta()" [disabled]="!formCopy.valid">Copy</button>
   </div>
 </clr-modal>
