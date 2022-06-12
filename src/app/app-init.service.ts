@@ -24,8 +24,15 @@ export class AppInitService {
       this.http.get<Environment>('assets/environment.json').toPromise().then((env) => {
         // check if exists
         if (env.NARRA_API_HOSTNAME) {
+          // set default protocol
+          let protocol = 'http'
+          // check from protocol
+          if (env.NARRA_API_PROTOCOL) {
+            // override
+            protocol = env.NARRA_API_PROTOCOL;
+          }
           // initialize server service with provided hostname
-          this.narraServerService.initialize(`http://${env.NARRA_API_HOSTNAME}`);
+          this.narraServerService.initialize(`${protocol}://${env.NARRA_API_HOSTNAME}`);
         } else {
           // default initialization
           this.narraServerService.initialize();

@@ -6,4 +6,5 @@
 
 export interface Environment {
   NARRA_API_HOSTNAME: string;
+  NARRA_API_PROTOCOL: string;
 }
