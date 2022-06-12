@@ -45,6 +45,7 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
     private narraActionService: narra.ActionService,
     private narraEventService: narra.EventService,
     private narraReturnService: narra.ReturnService,
+    private narraServerService: narra.ServerService,
     private eventService: EventService,
     private authService: AuthService,
     private route: ActivatedRoute,
@@ -194,11 +195,16 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
       // process responses
       responses.forEach((responseee) => {
         const id = responseee.return.id;
-        const url = responseee.return.url;
+        let url = responseee.return.url;
         // process those with url
         if (url != null) {
           // remove from returns
           returns = returns.filter((r) => r.id !== id);
+          // check protocol
+          // TODO better check
+          if (this.narraServerService.apiServer.startsWith('https')) {
+            url = url.replace('http', 'https')
+          }
           // and into files
           files.push(url);
         }
