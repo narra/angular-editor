@@ -6,12 +6,12 @@
 
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ClrWizard} from '@clr/angular';
-import {forkJoin, Observable, of, Subscription} from 'rxjs';
+import {forkJoin, Observable, of, Subscription, switchMap} from 'rxjs';
 import {AddService, AuthService, BreadcrumbService, EventService, MessageService} from '@app/services';
 import {EventType} from '@app/enums';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import flattenDeep from 'lodash/flattenDeep';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {ArrayHelper, ErrorHelper, ScenarioHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 
@@ -22,7 +22,7 @@ import {narra} from '@narra/api';
 })
 export class CreateItemWizardComponent extends ErrorHelper implements OnInit, OnDestroy {
   @ViewChild('wizard') wizard: ClrWizard;
-  @ViewChild('formLibrary') formLibrary: FormGroup;
+  @ViewChild('formLibrary') formLibrary: UntypedFormGroup;
   @ViewChild('fileDropRef', {static: false}) fileDropEl: ElementRef;
 
   // private
@@ -136,6 +136,7 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
       shared: false,
       purged: false,
       contributors: [],
+      stats: undefined,
       scenario: undefined,
       thumbnails: [],
       metadata: [],
@@ -183,26 +184,37 @@ export class CreateItemWizardComponent extends ErrorHelper implements OnInit, On
   public prepareOptions(): void {
     // loading on
     this.loadingFlag = true;
-    // load libraries
-    this.libraryService.getLibraries().subscribe((response) => {
+    // load libraries per scope
+    let loadLibraries: Observable<narra.Library[]> = this.libraryService.getLibraries().pipe(
+      switchMap((response) => {
+        return of(response.libraries);
+      })
+    );
+    // use this project libraries instead
+    if (this.project) {
+      loadLibraries = of(this.project.libraries);
+    }
+    // load
+    loadLibraries.subscribe((libraries) => {
       // set libraries
-      this.libraries = response.libraries;
+      this.libraries = ArrayHelper.sort('name', libraries);
       // move next
       this.wizard.next();
       // loading done
       this.loadingFlag = false;
       // filter proxies with library support
-      const resolvedLibraries = this.proxies.filter((proxy) => 'library' in proxy.options).map( (proxy) => proxy.options['library']);
+      const resolvedLibraries = this.proxies.filter((proxy) => 'library' in proxy.options).map((proxy) => proxy.options['library']);
       // select library or set name
       if (resolvedLibraries.length) {
+        // set new library name
+        this.newLibrary.name = resolvedLibraries[0].name;
         // resolved libraries is prioritized
-        const filtered = this.libraries.filter((library) => library.name === resolvedLibraries[0].name);
+        const filtered = this.libraries.filter((library) => library.name.includes(resolvedLibraries[0].name));
         if (filtered.length) {
           this.selectedLibrary = filtered[0].id;
           this.selectionActive = true;
           this.creationActive = false;
         } else {
-          this.newLibrary.name = resolvedLibraries[0].name;
           this.selectionActive = false;
           this.creationActive = true;
         }

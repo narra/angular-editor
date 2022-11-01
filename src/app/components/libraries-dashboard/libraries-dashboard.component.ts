@@ -68,6 +68,8 @@ export class LibrariesDashboardComponent implements OnInit, OnDestroy {
       } else {
         this.libraries = ArrayHelper.filterIncludeAuthors<narra.Library>(response.libraries, [this.authService.user]);
       }
+      // sort
+      this.libraries = ArrayHelper.sort('name', this.libraries);
       // breadcrumbs
       this.breadcrumbsService.empty();
       // stop loading

@@ -5,15 +5,15 @@
  */
 
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {Navigation} from '@app/models';
 import {narra} from '@narra/api';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {forkJoin, Subscription} from 'rxjs';
+import {forkJoin, Observable, Subscription} from 'rxjs';
 import {AddService, AuthService, BreadcrumbService, EventService, MessageService} from '@app/services';
 import {LibrariesNavigation} from '@app/navigation';
 import {EventType, RelationType} from '@app/enums';
-import {RelationHelper} from '@app/helpers';
+import {ArrayHelper, RelationHelper} from '@app/helpers';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {saveAs} from 'file-saver';
 
@@ -23,8 +23,8 @@ import {saveAs} from 'file-saver';
   styleUrls: ['./libraries-metadata.component.scss']
 })
 export class LibrariesMetadataComponent implements OnInit {
-  @ViewChild('formAdd') formAdd: FormGroup;
-  @ViewChild('formCopy') formCopy: FormGroup;
+  @ViewChild('formAdd') formAdd: UntypedFormGroup;
+  @ViewChild('formCopy') formCopy: UntypedFormGroup;
   @ViewChild('fileDropRef', {static: false}) fileDropEl: ElementRef;
 
   // public
@@ -93,7 +93,7 @@ export class LibrariesMetadataComponent implements OnInit {
     // process
     forkJoin<any>(joins).subscribe((responses) => {
       // process libraries
-      this.libraries = (responses[1] as narra.Response<narra.Library[], 'libraries'>).libraries.filter((library) => library.id !== this.params.get('id'));
+      this.libraries = ArrayHelper.sort('name', (responses[1] as narra.Response<narra.Library[], 'libraries'>).libraries.filter((library) => library.id !== this.params.get('id')));
       // select destination
       if (this.libraries.length) {
         this.destination = this.libraries[0];
@@ -267,14 +267,14 @@ export class LibrariesMetadataComponent implements OnInit {
 
   private _processReturns(returns: narra.Return[], files: string[]): void {
     // prepare objects
-    const joins = [];
+    const joins: Observable<narra.Response<narra.Return, 'return'>>[] = [];
     // iterate over returns
     returns.forEach((r) => {
       // push into joins
       joins.push(this.narraReturnService.getReturn(r.id));
     });
     // check for the rest once requests done
-    forkJoin<narra.Response<narra.Return, 'return'>>(joins).subscribe((responses) => {
+    forkJoin(joins).subscribe((responses) => {
       // process responses
       responses.forEach((responseee) => {
         const id = responseee.return.id;

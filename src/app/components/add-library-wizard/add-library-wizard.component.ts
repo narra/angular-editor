@@ -75,8 +75,10 @@ export class AddLibraryWizardComponent implements OnInit, OnDestroy {
             const cache = ArrayHelper.pluck(this.project.libraries, 'id');
             // get libraries and filter
             this.libraries = responses[1].libraries.filter(library => {
-                return !cache.includes(library.id);
+              return !cache.includes(library.id);
             });
+            // sort libraries
+            this.libraries = ArrayHelper.sort('name', this.libraries);
             // loading done
             this.loadingFlag = false;
           });

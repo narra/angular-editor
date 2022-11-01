@@ -23,8 +23,8 @@ export class ArrayHelper {
   }
 
   static sort(key: string, array: any[]): any[] {
-    const sortBy = (key) => {
-      return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
+    const sortBy = (k) => {
+      return (a, b) => (a[k] > b[k]) ? 1 : ((b[k] > a[k]) ? -1 : 0);
     };
     return array.concat().sort(sortBy(key));
   }

@@ -51,6 +51,7 @@ import {
   ScenariosDashboardComponent
 } from '@app/components';
 import {DropDirective} from '@app/directives';
+import {LimitPipe} from '@app/pipes';
 
 export function initializeApp(appInitService: AppInitService) {
   return (): Promise<any> => {
@@ -94,7 +95,8 @@ export function initializeApp(appInitService: AppInitService) {
     LibrariesMetadataComponent,
     ItemsMetadataComponent,
     AdminActionsComponent,
-    AdminLogComponent
+    AdminLogComponent,
+    LimitPipe
   ],
   imports: [
     BrowserModule,

@@ -9,7 +9,7 @@ import {ClrWizard} from '@clr/angular';
 import {Subscription} from 'rxjs';
 import {AddService, AuthService, BreadcrumbService, EventService} from '@app/services';
 import {EventType} from '@app/enums';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {ScenarioHelper, UserHelper} from '@app/helpers';
 import {narra} from '@narra/api';
 
@@ -20,8 +20,8 @@ import {narra} from '@narra/api';
 })
 export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
   @ViewChild('wizard') wizard: ClrWizard;
-  @ViewChild('formBasic') formBasic: FormGroup;
-  @ViewChild('formContributors') formContributors: FormGroup;
+  @ViewChild('formBasic') formBasic: UntypedFormGroup;
+  @ViewChild('formContributors') formContributors: UntypedFormGroup;
 
   // public
   public open: boolean;
@@ -109,6 +109,7 @@ export class CreateLibraryWizardComponent implements OnInit, OnDestroy {
       shared: false,
       purged: false,
       contributors: [],
+      stats: undefined,
       scenario: undefined,
       thumbnails: [],
       metadata: [],

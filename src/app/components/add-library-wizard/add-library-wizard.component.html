@@ -39,7 +39,7 @@
             <div class="clr-col"><strong>{{library.name}}</strong></div>
           </div>
           <div class="clr-row">
-            <div class="clr-col">{{library.description}}</div>
+            <div class="clr-col">{{library.description | limit : 30 }}</div>
           </div>
         </div>
         <div class="clr-col-2 text-right" style="padding: 0;">

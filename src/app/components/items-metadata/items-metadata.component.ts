@@ -5,7 +5,7 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {Navigation} from '@app/models';
 import {narra} from '@narra/api';
 import {ActivatedRoute, ParamMap} from '@angular/router';
@@ -21,7 +21,7 @@ import {RelationHelper} from '@app/helpers';
   styleUrls: ['./items-metadata.component.scss']
 })
 export class ItemsMetadataComponent implements OnInit {
-  @ViewChild('formAdd') formAdd: FormGroup;
+  @ViewChild('formAdd') formAdd: UntypedFormGroup;
 
   // public
   public navigation: Navigation;

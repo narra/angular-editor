@@ -8,12 +8,12 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core
 import {Navigation} from '@app/models';
 import {narra} from '@narra/api';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {forkJoin, Subscription} from 'rxjs';
+import {forkJoin, Observable, Subscription} from 'rxjs';
 import {EventType, RelationType} from '@app/enums';
 import {RelationHelper} from '@app/helpers';
 import {AddService, AuthService, BreadcrumbService, EventService, MessageService} from '@app/services';
 import {ProjectsNavigation} from '@app/navigation';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {saveAs} from 'file-saver';
 
@@ -23,8 +23,8 @@ import {saveAs} from 'file-saver';
   styleUrls: ['./projects-metadata.component.scss']
 })
 export class ProjectsMetadataComponent implements OnInit, OnDestroy {
-  @ViewChild('formAdd') formAdd: FormGroup;
-  @ViewChild('formCopy') formCopy: FormGroup;
+  @ViewChild('formAdd') formAdd: UntypedFormGroup;
+  @ViewChild('formCopy') formCopy: UntypedFormGroup;
   @ViewChild('fileDropRef', {static: false}) fileDropEl: ElementRef;
 
   // public
@@ -263,14 +263,14 @@ export class ProjectsMetadataComponent implements OnInit, OnDestroy {
 
   private _processReturns(returns: narra.Return[], files: string[]): void {
     // prepare objects
-    const joins = [];
+    const joins: Observable<narra.Response<narra.Return, 'return'>>[] = [];
     // iterate over returns
     returns.forEach((r) => {
       // push into joins
       joins.push(this.narraReturnService.getReturn(r.id));
     });
     // check for the rest once requests done
-    forkJoin<narra.Response<narra.Return, 'return'>>(joins).subscribe((responses) => {
+    forkJoin(joins).subscribe((responses) => {
       // process responses
       responses.forEach((responseee) => {
         const id = responseee.return.id;

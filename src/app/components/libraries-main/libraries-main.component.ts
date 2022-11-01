@@ -12,7 +12,7 @@ import {AuthService, BreadcrumbService, EventService, MessageService} from '@app
 import {LibrariesNavigation} from '@app/navigation';
 import {EventType, RelationType} from '@app/enums';
 import {RelationHelper} from '@app/helpers';
-import {forkJoin, Subscription, timer} from 'rxjs';
+import {forkJoin, Observable, Subscription, timer} from 'rxjs';
 import {ClrDatagridStateInterface} from '@clr/angular';
 import {saveAs} from 'file-saver';
 
@@ -184,14 +184,14 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
 
   private _processReturns(returns: narra.Return[], files: string[]): void {
     // prepare objects
-    const joins = [];
+    const joins: Observable<narra.Response<narra.Return, 'return'>>[] = [];
     // iterate over returns
     returns.forEach((r) => {
       // push into joins
       joins.push(this.narraReturnService.getReturn(r.id));
     });
     // check for the rest once requests done
-    forkJoin<narra.Response<narra.Return, 'return'>>(joins).subscribe((responses) => {
+    forkJoin(joins).subscribe((responses) => {
       // process responses
       responses.forEach((responseee) => {
         const id = responseee.return.id;
@@ -203,7 +203,7 @@ export class LibrariesMainComponent implements OnInit, OnDestroy {
           // check protocol
           // TODO better check
           if (this.narraServerService.apiServer.startsWith('https')) {
-            url = url.replace('http', 'https')
+            url = url.replace('http', 'https');
           }
           // and into files
           files.push(url);

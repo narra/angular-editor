@@ -5,7 +5,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {version} from '../../../../package.json';
+import packageInfo from '../../../../package.json';
 import {forkJoin} from 'rxjs';
 import {AdminNavigationService} from '@app/navigation';
 import {narra} from '@narra/api';
@@ -30,7 +30,7 @@ export class AdminSystemComponent implements OnInit {
     private breadcrumbService: BreadcrumbService
   ) {
     this.loading = true;
-    this.editorVersion = version;
+    this.editorVersion = packageInfo.version;
   }
 
   ngOnInit() {

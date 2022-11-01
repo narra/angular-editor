@@ -10,9 +10,10 @@ import {narra} from '@narra/api';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ProjectsNavigation} from '@app/navigation';
 import {EventType, RelationType, WizardType} from '@app/enums';
-import {RelationHelper} from '@app/helpers';
+import {ArrayHelper, RelationHelper} from '@app/helpers';
 import {AddService, AuthService, BreadcrumbService, EventService} from '@app/services';
 import {Subscription} from 'rxjs';
+import {MetaHelper} from "@narra/api/lib";
 
 @Component({
   selector: 'app-projects-main',
@@ -77,6 +78,8 @@ export class ProjectsMainComponent implements OnInit, OnDestroy {
     this.projectService.getProject(this.params.get('name')).subscribe((response) => {
       // get project
       this.project = response.project;
+      // sort libraries
+      this.project.libraries = ArrayHelper.sort('name', this.project.libraries);
       // breadcrumbs
       this.breadcrumbsService.updateProject(this.project.id, this.project.name);
       // relation
